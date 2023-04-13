@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "public/dist",
+    "paths": {
+      "Main/*": ["./src/*"],
+      "Utils/*": ["./src/Utils/*"],
+      "Operations/*": ["./src/Operations/*"],
+      "Objects/*": ["./src/Objects/*"],
+      "Interfaces/*": ["./src/Interfaces/*"],
+      "Files/*": ["./src/Files/*"],
+      "Types/*": ["./src/Types/*"],
+      "Factories/*": ["./src/Factories/*"],
+      "Constants/*": ["./src/Constants/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

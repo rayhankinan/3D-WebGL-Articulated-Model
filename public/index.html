@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/svg+xml" href="./images/logo.svg" />
+    <link rel="stylesheet" href="./styles/index.css" />
+    <script type="x-shader/x-vertex" id="vertex-shader">
+      attribute vec4 a_position;
+      attribute vec4 a_color;
+      attribute vec3 a_normal;
+
+      uniform mat4 u_worldViewProjection;
+      uniform mat4 u_worldInverseTranspose;
+
+      varying vec4 v_color;
+      varying vec3 v_normal;
+
+      void main() {
+        // Multiply the position by the matrix
+        gl_Position = u_worldViewProjection * a_position;
+
+        // Change color of shape
+        v_color = a_color;
+
+        // Orient the normals and pass to the fragment shader
+        v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
+      }
+    </script>
+    <script type="x-shader/x-fragment" id="fragment-shader">
+      precision mediump float;
+
+      // Passed in from the vertex shader
+      varying vec4 v_color;
+      varying vec3 v_normal;
+
+      uniform vec3 u_ambientLightColor;
+      uniform vec3 u_reverseLightDirection;
+
+      uniform bool u_shading;
+
+      void main() {
+        gl_FragColor = v_color;
+
+        if (u_shading) {
+          // Because v_normal is a varying it's interpolated so it will not be a unit vector
+          // Normalizing it will make it a unit vector again
+          vec3 normal = normalize(v_normal);
+          float directional_light = max(dot(normal, u_reverseLightDirection), 0.0);
+
+          // Lets multiply just the color portion (not the alpha) by the light
+          gl_FragColor.rgb *= (u_ambientLightColor + directional_light);
+        }
+      }
+    </script>
+    <script type="text/javascript" src="./dist/index.js" defer></script>
+    <title>3D WebGL Hollow Object</title>
+  </head>
+  <body>
+    <div id="title">
+      <div id="title-box">
+        <div>3D WebGL Hollow Object</div>
+      </div>
+    </div>
+    <div id="root">
+      <div id="left-panel">
+        <div id="section">
+          <h2>File</h2>
+          <button class="btn" id="load-btn">Load</button>
+          <button class="btn" id="save-btn">Save</button>
+          <h2>Projection</h2>
+          <select id="list-of-projection" class="btn">
+            <option value="orthographic" selected="selected">
+              Orthographic
+            </option>
+            <option value="perspective">Perspective</option>
+            <option value="oblique">Oblique</option>
+          </select>
+          <button class="btn" id="reset-btn">Reset</button>
+          <button class="btn" id="help-btn">Help</button>
+          <h2>Shape</h2>
+          <button class="btn" id="cube-btn">Cube</button>
+          <button class="btn" id="pyramid-btn">Pyramid</button>
+          <button class="btn" id="tube-btn">Tube</button>
+        </div>
+      </div>
+      <canvas id="webgl-canvas"></canvas>
+      <div id="control-panel">
+        <div id="control-section">
+          <div id="transformation-sliders">
+            <h2>Transformation</h2>
+            <div id="translation">
+              <h3>Translate X</h3>
+              <input
+                id="slider-translate-x"
+                type="range"
+                min="-1000"
+                max="1000"
+                step="10"
+                value="0"
+              />
+              <label id="label-translate-x" for="slider-translate-x">0</label>
+              <h3>Translate Y</h3>
+              <input
+                id="slider-translate-y"
+                type="range"
+                min="-1000"
+                max="1000"
+                step="10"
+                value="0"
+              />
+              <label id="label-translate-y" for="slider-translate-y">0</label>
+              <h3>Translate Z</h3>
+              <input
+                id="slider-translate-z"
+                type="range"
+                min="-1000"
+                max="1000"
+                step="10"
+                value="0"
+              />
+              <label id="label-translate-z" for="slider-translate-z">0</label>
+            </div>
+            <div id="rotation">
+              <h3>Angle X</h3>
+              <input
+                id="slider-angle-x"
+                type="range"
+                min="0"
+                max="360"
+                step="1"
+                value="0"
+              />
+              <label id="label-angle-x" for="slider-angle-x">0</label>
+              <h3>Angle Y</h3>
+              <input
+                id="slider-angle-y"
+                type="range"
+                min="0"
+                max="360"
+                step="1"
+                value="0"
+              />
+              <label id="label-angle-y" for="slider-angle-y">0</label>
+              <h3>Angle Z</h3>
+              <input
+                id="slider-angle-z"
+                type="range"
+                min="0"
+                max="360"
+                step="1"
+                value="0"
+              />
+              <label id="label-angle-z" for="slider-angle-z">0</label>
+            </div>
+            <div id="scaling">
+              <h3>Scale X</h3>
+              <input
+                id="slider-scale-x"
+                type="range"
+                min="0"
+                max="10"
+                step="0.1"
+                value="1"
+              />
+              <label id="label-scale-x" for="slider-scale-x">1</label>
+              <h3>Scale Y</h3>
+              <input
+                id="slider-scale-y"
+                type="range"
+                min="0"
+                max="10"
+                step="0.1"
+                value="1"
+              />
+              <label id="label-scale-y" for="slider-scale-y">1</label>
+              <h3>Scale Z</h3>
+              <input
+                id="slider-scale-z"
+                type="range"
+                min="0"
+                max="10"
+                step="0.1"
+                value="1"
+              />
+              <label id="label-scale-z" for="slider-scale-z">1</label>
+            </div>
+          </div>
+          <div id="camera-sliders">
+            <h2>Camera Controls</h2>
+            <div id="camera-parameter">
+              <h3>Angle</h3>
+              <input
+                id="slider-cam-angle"
+                type="range"
+                min="0"
+                max="360"
+                step="1"
+                value="0"
+              />
+              <label id="label-cam-angle" for="slider-cam-angle">0</label>
+              <h3>Radius</h3>
+              <input
+                id="slider-cam-radius"
+                type="range"
+                min="0"
+                max="1000"
+                step="1"
+                value="0"
+              />
+              <label id="label-cam-radius" for="slider-cam-radius">0</label>
+            </div>
+          </div>
+          <div id="extra-controls">
+            <h3>Shading Mode</h3>
+            <button class="shading-btn" id="shading-mode-btn">ON</button>
+            <h3>Enable Animation</h3>
+            <button class="animation-btn" id="animation-mode-btn">ON</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="help-panel">
+      <div id="help-content">
+        <div>
+          <h2>1. Transformasi Translasi</h2>
+          <p>
+            <b>Translate X</b>: Melakukan translasi objek pada sumbu X dengan
+            jarak tertentu
+          </p>
+          <p>
+            <b>Translate Y</b>: Melakukan translasi objek pada sumbu Y dengan
+            jarak tertentu
+          </p>
+          <p>
+            <b>Translate Z</b>: Melakukan translasi objek pada sumbu Z dengan
+            jarak tertentu
+          </p>
+
+          <h2>2. Transformasi Rotasi</h2>
+          <p>
+            <b>Angle X</b>: Melakukan rotasi objek pada sumbu X dengan sudut
+            tertentu
+          </p>
+          <p>
+            <b>Angle Y</b>: Melakukan rotasi objek pada sumbu Y dengan sudut
+            tertentu
+          </p>
+          <p>
+            <b>Angle Z</b>: Melakukan rotasi objek pada sumbu Z dengan sudut
+            tertentu
+          </p>
+
+          <h2>3. Transformasi Dilatasi</h2>
+          <p>
+            <b>Scale X</b>: Melakukan scaling (memperbesar / memperkecil) objek
+            pada sumbu X dengan skala tertentu
+          </p>
+          <p>
+            <b>Scale Y</b>: Melakukan scaling (memperbesar / memperkecil) objek
+            pada sumbu Y dengan skala tertentu
+          </p>
+          <p>
+            <b>Scale Z</b>: Melakukan scaling (memperbesar / memperkecil) objek
+            pada sumbu Z dengan skala tertentu
+          </p>
+        </div>
+        <div>
+          <h2>4. Kontrol Kamera</h2>
+          <p>
+            <b>Angle</b>: Mengubah sudut kamera terhadap objek dengan sudut
+            tertentu
+          </p>
+          <p><b>Radius</b>: Mengubah jarak view radius kamera terhadap objek</p>
+
+          <h2>5. Shading Mode</h2>
+          <p>
+            <b>Mode ON</b>: Akan menyalakan shading terhadap objek dengan
+            directional lighting
+          </p>
+          <p>
+            <b>Mode OFF</b>: Akan mematikan shading dan melakukan render object
+            tanpa cahaya
+          </p>
+
+          <h2>6. Enable Animation</h2>
+          <p>
+            <b>Mode ON</b>: Akan menyalakan animasi rotasi terhadap sumbu Y dan
+            Z secara otomatis
+          </p>
+          <p>
+            <b>Mode OFF</b>: Akan menghentikan animasi rotasi di posisi saat itu
+          </p>
+
+          <h2>7. File</h2>
+          <p>
+            <b>Load</b>: Melakukan load file JSON yang berisi data objek model
+            3D yang pernah disimpan
+          </p>
+          <p>
+            <b>Save</b>: Melakukan save file ke format JSON yang berisi data
+            objek model 3D saat itu
+          </p>
+        </div>
+        <div>
+          <h2>8. Projection</h2>
+          <p>Terdapat 3 jenis proyeksi yang disediakan, yaitu:</p>
+          <p>
+            <b>Orthographic Projection</b>: Adalah jenis proyeksi dimana semua
+            garis proyeksi tegak lurus terhadap bidang proyeksi
+          </p>
+          <br />
+          <p>
+            <b>Perspective Projection</b>: Adalah jenis proyeksi dimana semakin
+            menjauh sebuah objek, maka akan terlihat lebih kecil, dan sebaliknya
+          </p>
+          <br />
+          <p>
+            <b>Oblique Projection</b>: Adalah jenis proyeksi dimana hasil
+            proyeksi tidak tegak lurus terhadap bidang proyeksi, tetapi berada
+            pada sebuah sudut
+          </p>
+
+          <h2>9. Tombol Reset</h2>
+          <p>
+            Digunakan untuk mengembalikan semua perubahan ke state awal yang
+            didefinisikan oleh program
+          </p>
+
+          <h2>10. Tombol Help</h2>
+          <p>Digunakan untuk menampilkan halaman help</p>
+
+          <button type="button" class="close-help-btn" id="close-help-btn">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
