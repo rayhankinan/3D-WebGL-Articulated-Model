@@ -15,8 +15,8 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 
-/* Create Program */
-const canvas = document.getElementById("webgl-canvas") as HTMLCanvasElement;
+/* Main Canvas */
+const canvas = document.getElementById("main-canvas") as HTMLCanvasElement;
 const gl = canvas.getContext("webgl");
 
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -125,18 +125,14 @@ const animationModeButton = document.getElementById("animation-mode-btn");
 const resetButton = document.getElementById("reset-btn");
 const helpButton = document.getElementById("help-btn");
 const helpModal = document.getElementById("help-panel");
-const helpContent = document.getElementById("help-panel");
 const closeHelpButton = document.getElementById("close-help-btn");
-const cubeButton = document.getElementById("cube-btn");
-const pyramidButton = document.getElementById("pyramid-btn");
-const tubeButton = document.getElementById("tube-btn");
 
 /* Global Variables */
 let object: Shape;
 let camera: Camera;
 let ambientColor: Color;
 let directionalLight: Light;
-let currentShape: string = JSON.stringify(require('../shapes/cube.json'));
+let currentShape: string = JSON.stringify(require("../shapes/cube.json"));
 let offsetTranslate = {
   orthographic: {
     x: canvas.width / 2,
@@ -205,7 +201,7 @@ const renderCanvas = () => {
   /* Clear Color and Buffer */
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  /* animate */
+  /* Animate */
   animate();
 
   /* Get Current Light */
@@ -445,37 +441,6 @@ window.onclick = function (event) {
     helpModal.style.display = "none";
   }
 };
-
-/* Shape selector */
-cubeButton.addEventListener("click", () => {
-  currentShape = JSON.stringify(require('../shapes/cube.json'))
-  initializeDefaultValue(
-    FileSystem.loadShape(currentShape),
-    generateDefaultCamera(),
-    generateDefaultAmbientColor(),
-    generateDefaultDirectionalLight()
-  );
-})
-
-pyramidButton.addEventListener("click", () => {
-  currentShape = JSON.stringify(require('../shapes/pyramid.json'))
-  initializeDefaultValue(
-    FileSystem.loadShape(currentShape),
-    generateDefaultCamera(),
-    generateDefaultAmbientColor(),
-    generateDefaultDirectionalLight()
-  );
-})
-
-tubeButton.addEventListener("click", () => {
-  currentShape = JSON.stringify(require('../shapes/tube.json'))
-  initializeDefaultValue(
-    FileSystem.loadShape(currentShape),
-    generateDefaultCamera(),
-    generateDefaultAmbientColor(),
-    generateDefaultDirectionalLight()
-  );
-})
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(

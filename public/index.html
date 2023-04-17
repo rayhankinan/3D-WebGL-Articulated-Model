@@ -99,13 +99,24 @@
             </div>
             <div>
               <h3>Projection</h3>
-              <select id="list-of-projection" class="btn">
+              <select id="list-of-projection" class="projection-btn">
                 <option value="orthographic" selected="selected">
                   Orthographic
                 </option>
                 <option value="perspective">Perspective</option>
                 <option value="oblique">Oblique</option>
               </select>
+            </div>
+          </div>
+          <h2>File</h2>
+          <div id="file-parameter">
+            <div>
+              <h3>Load Model</h3>
+              <button class="file-btn" id="load-btn">Load</button>
+            </div>
+            <div>
+              <h3>Save Model</h3>
+              <button class="file-btn" id="save-btn">Save</button>
             </div>
           </div>
         </div>
@@ -116,6 +127,15 @@
           <div id="component-tree"></div>
           <div>
             <h2>Animation</h2>
+            <button class="animation-btn" id="animation-mode-btn">ON</button>
+          </div>
+          <div>
+            <h2>Reset</h2>
+            <button class="reset-btn" id="reset-btn">Reset</button>
+          </div>
+          <div>
+            <h2>Help</h2>
+            <button class="help-btn" id="help-btn">Help</button>
           </div>
         </div>
       </div>

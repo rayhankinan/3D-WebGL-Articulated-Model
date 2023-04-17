@@ -55,7 +55,8 @@ html {
   border: 3px solid black;
 }
 
-#camera-parameter {
+#camera-parameter,
+#file-parameter {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -174,34 +175,12 @@ html {
   padding: 25px 15px 25px 15px;
 }
 
-.btn {
-  align-items: center;
-  background: #ffffff;
-  border: 0 solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  color: #1a202c;
-  display: inline-flex;
-  font-size: 1rem;
-  font-weight: 700;
-  height: 5vh;
-  justify-content: center;
-  line-height: 24px;
-  overflow-wrap: break-word;
-  padding-left: 8px;
-  text-decoration: none;
-  margin-bottom: 2px;
-  width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
 .shading-btn,
-.animation-btn {
+.animation-btn,
+.file-btn,
+.reset-btn,
+.help-btn,
+.projection-btn {
   align-items: center;
   background: #ffffff;
   border: 0 solid #e2e8f0;
@@ -250,10 +229,13 @@ html {
   margin-top: 3vh;
 }
 
-.btn:hover,
 .shading-btn:hover,
 .animation-btn:hover,
-.close-help-btn:hover {
+.close-help-btn:hover,
+.file-btn:hover,
+.reset-btn:hover,
+.help-btn:hover,
+.projection-btn:hover {
   transition: all 0.1s ease;
   background-color: rgb(150, 150, 150);
 }
