@@ -3,20 +3,19 @@ import ProgramInfo from "Types/program-info";
 import ProgramBuffer from "Types/program-buffer";
 
 class Renderer {
-  constructor(public gl: WebGLRenderingContext, public program: WebGLProgram) {}
+  constructor(
+    public gl: WebGLRenderingContext,
+    public program: WebGLProgram,
+    public programInfo: ProgramInfo,
+    public programBuffer: ProgramBuffer
+  ) {}
 
-  public use(): void {
+  public render(programParam: ProgramParam, count: number): void {
+    /* Use Program */
     this.gl.useProgram(this.program);
-  }
 
-  public render(
-    programInfo: ProgramInfo,
-    programBuffer: ProgramBuffer,
-    programParam: ProgramParam,
-    count: number
-  ): void {
     /* Unpack Program Info */
-    const { attribLocations, uniformLocations } = programInfo;
+    const { attribLocations, uniformLocations } = this.programInfo;
     const { positionLocation, colorLocation, normalLocation } = attribLocations;
     const {
       worldViewProjectionLocation,
@@ -27,7 +26,7 @@ class Renderer {
     } = uniformLocations;
 
     /* Unpack Program Buffer */
-    const { positionBuffer, colorBuffer, normalBuffer } = programBuffer;
+    const { positionBuffer, colorBuffer, normalBuffer } = this.programBuffer;
 
     /* Unpack Program Parameter */
     const { attributes, uniforms } = programParam;

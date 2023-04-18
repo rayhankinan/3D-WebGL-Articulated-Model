@@ -7,8 +7,6 @@ import Projection from "Operations/projection";
 import ProjectionParams from "Types/projection-params";
 import ProjectionType from "Types/projection-type";
 import ShaderStatus from "Types/shader-status";
-import ProgramInfo from "Types/program-info";
-import ProgramBuffer from "Types/program-buffer";
 import ProgramParam from "Types/program-param";
 import Face from "Objects/face";
 import Camera from "Objects/camera";
@@ -154,8 +152,6 @@ class Shape implements ShapeInterface, TransformationInterface {
 
   public render<T extends ProjectionType>(
     renderer: Renderer,
-    programInfo: ProgramInfo,
-    programBuffer: ProgramBuffer,
     projectionType: T,
     params: ProjectionParams[T],
     camera: Camera,
@@ -281,7 +277,7 @@ class Shape implements ShapeInterface, TransformationInterface {
     const count = this.countVertex();
 
     /* Render */
-    renderer.render(programInfo, programBuffer, programParam, count);
+    renderer.render(programParam, count);
   }
 }
 

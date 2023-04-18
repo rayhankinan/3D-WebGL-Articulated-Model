@@ -52,10 +52,6 @@ const fragmentShader = createShader(
 /* Setup Program */
 const program = createProgram(gl, vertexShader, fragmentShader);
 
-/* Setup Renderer */
-const renderer = new Renderer(gl, program);
-renderer.use();
-
 /* Setup Program Info */
 const programInfo: ProgramInfo = {
   attribLocations: {
@@ -90,6 +86,9 @@ const programBuffer: ProgramBuffer = {
   colorBuffer: gl.createBuffer(),
   normalBuffer: gl.createBuffer(),
 };
+
+/* Setup Renderer */
+const renderer = new Renderer(gl, program, programInfo, programBuffer);
 
 /* Get HTML Element */
 /* Transformation Elements */
@@ -240,10 +239,10 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
     );
 
     /* Change Slider */
-    sliderAngleY.valueAsNumber = radToDeg(object.angleY);
+    sliderAngleY.valueAsNumber = Math.round(radToDeg(object.angleY));
     labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
 
-    sliderAngleZ.valueAsNumber = radToDeg(object.angleZ);
+    sliderAngleZ.valueAsNumber = Math.round(radToDeg(object.angleZ));
     labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
   }
 
@@ -256,8 +255,6 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
   /* Render Object */
   object.render(
     renderer,
-    programInfo,
-    programBuffer,
     projectionType,
     projectionParams[projectionType],
     camera,
@@ -293,13 +290,13 @@ const initializeDefaultValue = (
   sliderTranslateZ.valueAsNumber = object.tz;
   labelTranslateZ.textContent = object.tz.toString();
 
-  sliderAngleX.valueAsNumber = radToDeg(object.angleX);
+  sliderAngleX.valueAsNumber = Math.round(radToDeg(object.angleX));
   labelAngleX.textContent = Math.round(radToDeg(object.angleX)).toString();
 
-  sliderAngleY.valueAsNumber = radToDeg(object.angleY);
+  sliderAngleY.valueAsNumber = Math.round(radToDeg(object.angleY));
   labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
 
-  sliderAngleZ.valueAsNumber = radToDeg(object.angleZ);
+  sliderAngleZ.valueAsNumber = Math.round(radToDeg(object.angleZ));
   labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
 
   sliderScaleX.valueAsNumber = object.sx;
