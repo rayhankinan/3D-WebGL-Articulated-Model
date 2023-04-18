@@ -50,6 +50,16 @@ class Node extends Shape implements NodeInterface {
     }
   }
 
+  public applyTransformation(): Node {
+    const matrix = this.getLocalMatrix();
+    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
+
+    const index = this.index.slice();
+    const children = this.children.map((c) => c.applyTransformation());
+
+    return new Node(index, children, arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
+  }
+
   public renderNode<T extends ProjectionType>(
     renderer: Renderer,
     projectionType: T,

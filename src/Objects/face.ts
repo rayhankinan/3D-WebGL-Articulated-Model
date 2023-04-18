@@ -10,7 +10,7 @@ class Face implements FaceInterface {
     public readonly color: Color
   ) {}
 
-  /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
+  /* TODO: TIDAK DIBUTUHKAN */
   // public findCenter(): Point {
   //   let totalX = 0;
   //   let totalY = 0;

@@ -18,7 +18,7 @@ class Shape implements ShapeInterface {
     public sz: number
   ) {}
 
-  /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
+  /* TODO: TIDAK DIBUTUHKAN */
   // public findCenter(): Point {
   //   let totalX = 0;
   //   let totalY = 0;

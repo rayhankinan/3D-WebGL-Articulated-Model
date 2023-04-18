@@ -1,16 +1,16 @@
-import ShapeFactory from "Factories/shape-factory";
-import ShapeInterface from "Interfaces/shape-interface";
-import Shape from "Objects/shape";
+import Articulated from "Objects/articulated";
+import ArticulatedFactory from "Factories/articulated-factory";
+import ArticulatedInterface from "Interfaces/articulated-interface";
 
 class FileSystem {
-  public static loadShape(text: string): Shape {
-    const shapeInterface = JSON.parse(text) as ShapeInterface;
+  public static loadArticulated(text: string): Articulated {
+    const articulatedInterface = JSON.parse(text) as ArticulatedInterface;
 
-    return ShapeFactory.fromInterface(shapeInterface);
+    return ArticulatedFactory.fromInterface(articulatedInterface);
   }
 
-  public static serializeShape(shape: Shape): string {
-    return JSON.stringify(shape.applyTransformation());
+  public static serializeArticulated(articulated: Articulated): string {
+    return JSON.stringify(articulated.applyTransformation());
   }
 }
 

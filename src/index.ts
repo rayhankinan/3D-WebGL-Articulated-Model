@@ -430,22 +430,22 @@ sliderCamRadius.addEventListener("input", (event) => {
   camera.radius = delta;
 });
 
-// loadButton.addEventListener("click", () => {
-//   FileHandling.upload((text) => {
-//     currentRawArticulated = text;
+loadButton.addEventListener("click", () => {
+  FileHandling.upload((text) => {
+    currentRawArticulated = text;
 
-//     initializeDefaultValue(
-//       FileSystem.loadShape(currentRawArticulated),
-//       generateDefaultCamera(),
-//       generateDefaultAmbientColor(),
-//       generateDefaultDirectionalLight()
-//     );
-//   });
-// });
+    initializeDefaultValue(
+      FileSystem.loadArticulated(currentRawArticulated),
+      generateDefaultCamera(),
+      generateDefaultAmbientColor(),
+      generateDefaultDirectionalLight()
+    );
+  });
+});
 
-// saveButton.addEventListener("click", () => {
-//   FileHandling.download(FileSystem.serializeShape(articulated));
-// });
+saveButton.addEventListener("click", () => {
+  FileHandling.download(FileSystem.serializeArticulated(articulated));
+});
 
 /* Shading and Animation */
 shadingModeButton.addEventListener("click", () => {
