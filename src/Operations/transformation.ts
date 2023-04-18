@@ -2,6 +2,15 @@ import Matrix from "Objects/matrix";
 import Coordinate from "Objects/coordinate";
 
 class Transformation {
+  public static identity(): Matrix {
+    const p1 = new Coordinate(1, 0, 0, 0);
+    const p2 = new Coordinate(0, 1, 0, 0);
+    const p3 = new Coordinate(0, 0, 1, 0);
+    const p4 = new Coordinate(0, 0, 0, 1);
+
+    return new Matrix(p1, p2, p3, p4);
+  }
+
   public static translation(tx: number, ty: number, tz: number): Matrix {
     const p1 = new Coordinate(1, 0, 0, 0);
     const p2 = new Coordinate(0, 1, 0, 0);

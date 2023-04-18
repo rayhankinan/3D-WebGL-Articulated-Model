@@ -139,6 +139,7 @@ class Shape implements ShapeInterface, TransformationInterface {
     return new Shape(arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
   }
 
+  /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
   public render<T extends ProjectionType>(
     renderer: Renderer,
     projectionType: T,
