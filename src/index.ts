@@ -212,33 +212,40 @@ let projectionParams: ProjectionParams = {
     ortho_far: -2000,
   },
 };
-let shaderStatus = ShaderStatus.OFF;
-let animation = false;
-let period = 20; // in ms
-let animationTimeout = Date.now().valueOf() + period;
+let shaderStatus: ShaderStatus = ShaderStatus.OFF;
+let animation: boolean = false;
+let then: DOMHighResTimeStamp = 0;
 
-const animate = () => {
-  if (animation && Date.now().valueOf() > animationTimeout) {
-    object.rotateY(degToRad((radToDeg(object.angleY) + 1) % 360));
-    object.rotateZ(degToRad((radToDeg(object.angleZ) + 1) % 360));
-
-    sliderAngleY.valueAsNumber = radToDeg(object.angleY);
-    labelAngleY.textContent = radToDeg(object.angleY).toString();
-
-    sliderAngleZ.valueAsNumber = radToDeg(object.angleZ);
-    labelAngleZ.textContent = radToDeg(object.angleZ).toString();
-
-    animationTimeout = Date.now().valueOf() + period;
-  }
-};
+/* Global Constant */
+const animationSpeed = 1.2;
 
 /* Render Canvas */
-const renderCanvas = () => {
-  /* Clear Color and Buffer */
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+const renderCanvas = (now: DOMHighResTimeStamp) => {
+  /* Convent to Second */
+  now *= 0.001;
+
+  /* Calculate Delta Time */
+  const deltaTime = now - then;
+
+  /* Update Time */
+  then = now;
 
   /* Animate */
-  animate();
+  if (animation) {
+    object.rotateY(
+      degToRad(radToDeg(object.angleY + animationSpeed * deltaTime) % 360)
+    );
+    object.rotateZ(
+      degToRad(radToDeg(object.angleZ + animationSpeed * deltaTime) % 360)
+    );
+
+    /* Change Slider */
+    sliderAngleY.valueAsNumber = radToDeg(object.angleY);
+    labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
+
+    sliderAngleZ.valueAsNumber = radToDeg(object.angleZ);
+    labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
+  }
 
   /* Get Current Light */
   const currentLight =
@@ -287,13 +294,13 @@ const initializeDefaultValue = (
   labelTranslateZ.textContent = object.tz.toString();
 
   sliderAngleX.valueAsNumber = radToDeg(object.angleX);
-  labelAngleX.textContent = radToDeg(object.angleX).toString();
+  labelAngleX.textContent = Math.round(radToDeg(object.angleX)).toString();
 
   sliderAngleY.valueAsNumber = radToDeg(object.angleY);
-  labelAngleY.textContent = radToDeg(object.angleY).toString();
+  labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
 
   sliderAngleZ.valueAsNumber = radToDeg(object.angleZ);
-  labelAngleZ.textContent = radToDeg(object.angleZ).toString();
+  labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
 
   sliderScaleX.valueAsNumber = object.sx;
   labelScaleX.textContent = object.sx.toString();
@@ -483,5 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
   );
-  renderCanvas();
+
+  window.requestAnimationFrame(renderCanvas);
 });

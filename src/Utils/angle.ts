@@ -3,5 +3,5 @@ export function degToRad(d: number) {
 }
 
 export function radToDeg(r: number) {
-  return Math.round((r * 180) / Math.PI);
+  return (r * 180) / Math.PI;
 }
