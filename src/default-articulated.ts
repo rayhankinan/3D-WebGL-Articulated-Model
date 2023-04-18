@@ -9,17 +9,7 @@ function generateDefaultArticulated(): Articulated {
   const rawShape = FileSystem.loadShape(
     JSON.stringify(require("../shapes/cube.json"))
   );
-  const shape = ShapeFactory.fromInterface(rawShape, {
-    tx: 0,
-    ty: 0,
-    tz: 0,
-    angleX: 0,
-    angleY: 0,
-    angleZ: 0,
-    sx: 1,
-    sy: 1,
-    sz: 1,
-  });
+  const shape = ShapeFactory.fromInterface(rawShape);
 
   return new Articulated(
     new Node(

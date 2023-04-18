@@ -1,5 +1,4 @@
 import NodeInterface from "Interfaces/node-interface";
-import TransformationInterface from "Main/Interfaces/transformation-interface";
 import Color from "Objects/color";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
