@@ -1,5 +1,5 @@
 import PointInterface from "Interfaces/point-interface";
-import Point from "Operations/point";
+import Point from "Objects/point";
 
 class PointFactory {
   public static fromInterface(point: PointInterface): Point {

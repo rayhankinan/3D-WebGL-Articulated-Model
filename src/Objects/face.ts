@@ -1,8 +1,8 @@
 import FaceInterface from "Interfaces/face-interface";
-import Matrix from "Operations/matrix";
-import Color from "Operations/color";
-import Point from "Operations/point";
-import Vector from "Operations/vector";
+import Matrix from "Objects/matrix";
+import Color from "Objects/color";
+import Point from "Objects/point";
+import Vector from "Objects/vector";
 
 class Face implements FaceInterface {
   constructor(

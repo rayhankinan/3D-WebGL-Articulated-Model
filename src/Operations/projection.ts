@@ -1,5 +1,5 @@
-import Matrix from "Operations/matrix";
-import Coordinate from "Operations/coordinate";
+import Matrix from "Objects/matrix";
+import Coordinate from "Objects/coordinate";
 
 class Projection {
   public static orthographic(

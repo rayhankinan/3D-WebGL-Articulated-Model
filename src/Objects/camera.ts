@@ -1,9 +1,9 @@
 import CameraInterface from "Interfaces/camera-interface";
-import Point from "Operations/point";
-import Coordinate from "Operations/coordinate";
-import Matrix from "Operations/matrix";
+import Point from "Objects/point";
+import Coordinate from "Objects/coordinate";
+import Matrix from "Objects/matrix";
 import Transformation from "Operations/transformation";
-import Vector from "Operations/vector";
+import Vector from "Objects/vector";
 
 class Camera implements CameraInterface {
   public constructor(

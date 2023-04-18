@@ -1,5 +1,5 @@
 import LightInterface from "Interfaces/light-interface";
-import Vector from "Operations/vector";
+import Vector from "Objects/vector";
 
 class Light extends Vector implements LightInterface {
   constructor(

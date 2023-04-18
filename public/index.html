@@ -67,82 +67,7 @@
       <div id="left-side">
         <div id="section">
           <canvas id="main-canvas"></canvas>
-          <h2>Camera Controls</h2>
-          <div id="camera-parameter">
-            <div>
-              <h3>Angle</h3>
-              <input
-                id="slider-cam-angle"
-                type="range"
-                min="0"
-                max="360"
-                step="1"
-                value="0"
-              />
-              <label id="label-cam-angle" for="slider-cam-angle">0</label>
-            </div>
-            <div>
-              <h3>Radius</h3>
-              <input
-                id="slider-cam-radius"
-                type="range"
-                min="0"
-                max="1000"
-                step="1"
-                value="0"
-              />
-              <label id="label-cam-radius" for="slider-cam-radius">0</label>
-            </div>
-            <div>
-              <h3>Shading Mode</h3>
-              <button class="shading-btn" id="shading-mode-btn">ON</button>
-            </div>
-            <div>
-              <h3>Projection</h3>
-              <select id="list-of-projection" class="projection-btn">
-                <option value="orthographic" selected="selected">
-                  Orthographic
-                </option>
-                <option value="perspective">Perspective</option>
-                <option value="oblique">Oblique</option>
-              </select>
-            </div>
-          </div>
-          <h2>File</h2>
-          <div id="file-parameter">
-            <div>
-              <h3>Load Model</h3>
-              <button class="file-btn" id="load-btn">Load</button>
-            </div>
-            <div>
-              <h3>Save Model</h3>
-              <button class="file-btn" id="save-btn">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="center-side">
-        <div id="section">
-          <h2>Component Tree</h2>
-          <div id="component-tree"></div>
-          <div>
-            <h2>Animation</h2>
-            <button class="animation-btn" id="animation-mode-btn">ON</button>
-          </div>
-          <div>
-            <h2>Reset</h2>
-            <button class="reset-btn" id="reset-btn">Reset</button>
-          </div>
-          <div>
-            <h2>Help</h2>
-            <button class="help-btn" id="help-btn">Help</button>
-          </div>
-        </div>
-      </div>
-      <div id="right-side">
-        <div id="section">
-          <canvas id="secondary-canvas"></canvas>
-          <div id="transformation-sliders">
+          <div id="transformation">
             <h2>Whole Transformation</h2>
             <div id="whole-transformation">
               <div id="translation">
@@ -266,6 +191,73 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div>
+            <h2>Camera Controls</h2>
+            <div id="camera-parameter">
+              <div>
+                <h3>Angle</h3>
+                <input
+                  id="slider-cam-angle"
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="1"
+                  value="0"
+                />
+                <label id="label-cam-angle" for="slider-cam-angle">0</label>
+              </div>
+              <div>
+                <h3>Radius</h3>
+                <input
+                  id="slider-cam-radius"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="0"
+                />
+                <label id="label-cam-radius" for="slider-cam-radius">0</label>
+              </div>
+              <div>
+                <h3>Projection</h3>
+                <select id="list-of-projection" class="projection-btn">
+                  <option value="orthographic" selected="selected">
+                    Orthographic
+                  </option>
+                  <option value="perspective">Perspective</option>
+                  <option value="oblique">Oblique</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="center-side">
+        <div id="section">
+          <h2>Component Tree</h2>
+          <div id="component-tree"></div>
+          <div>
+            <h2>Animation</h2>
+            <button class="animation-btn" id="animation-mode-btn">ON</button>
+          </div>
+          <div>
+            <h2>Shading Mode</h2>
+            <button class="shading-btn" id="shading-mode-btn">ON</button>
+          </div>
+          <div id="option-parameter">
+            <h2>Option</h2>
+            <button class="file-btn" id="load-btn">Load</button>
+            <button class="file-btn" id="save-btn">Save</button>
+            <button class="reset-btn" id="reset-btn">Reset</button>
+            <button class="help-btn" id="help-btn">Help</button>
+          </div>
+        </div>
+      </div>
+      <div id="right-side">
+        <div id="section">
+          <canvas id="secondary-canvas"></canvas>
+          <div>
             <h2>Shape Transformation</h2>
             <div id="shape-transformation">
               <div id="translation-shape">
@@ -408,35 +400,37 @@
               </div>
             </div>
           </div>
-          <h2>Camera Controls</h2>
-          <div id="camera-parameter-shape">
-            <div>
-              <h3>Angle</h3>
-              <input
-                id="slider-cam-angle-shape"
-                type="range"
-                min="0"
-                max="360"
-                step="1"
-                value="0"
-              />
-              <label id="label-cam-angle-shape" for="slider-cam-angle-shape"
-                >0</label
-              >
-            </div>
-            <div>
-              <h3>Radius</h3>
-              <input
-                id="slider-cam-radius-shape"
-                type="range"
-                min="0"
-                max="1000"
-                step="1"
-                value="0"
-              />
-              <label id="label-cam-radius-shape" for="slider-cam-radius-shape"
-                >0</label
-              >
+          <div>
+            <h2>Camera Controls</h2>
+            <div id="camera-parameter-shape">
+              <div>
+                <h3>Angle</h3>
+                <input
+                  id="slider-cam-angle-shape"
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="1"
+                  value="0"
+                />
+                <label id="label-cam-angle-shape" for="slider-cam-angle-shape"
+                  >0</label
+                >
+              </div>
+              <div>
+                <h3>Radius</h3>
+                <input
+                  id="slider-cam-radius-shape"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="1"
+                  value="0"
+                />
+                <label id="label-cam-radius-shape" for="slider-cam-radius-shape"
+                  >0</label
+                >
+              </div>
             </div>
           </div>
         </div>

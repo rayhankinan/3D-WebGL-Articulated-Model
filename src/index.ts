@@ -6,7 +6,7 @@ import Renderer from "Utils/renderer";
 import Shape from "Objects/shape";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
-import Color from "Operations/color";
+import Color from "Objects/color";
 import ProjectionType from "Types/projection-type";
 import ProjectionParams from "Types/projection-params";
 import ShaderStatus from "Types/shader-status";
@@ -18,77 +18,82 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 
-/* Main Canvas */
-const canvas = document.getElementById("main-canvas") as HTMLCanvasElement;
-const gl = canvas.getContext("webgl");
-
-/* Setup Viewport */
-resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
-gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-/* Clear Color and Buffer */
-gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-/* Turn On Culling */
-gl.enable(gl.CULL_FACE);
-
-/* Enable the Depth Buffer */
-gl.enable(gl.DEPTH_TEST);
-
-/* Setup Vertex dan Fragment Shader */
+/* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
 const fragmentShaderElement = document.getElementById("fragment-shader");
 
 const vertexShaderSource = vertexShaderElement.textContent;
 const fragmentShaderSource = fragmentShaderElement.textContent;
 
-const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+/* Main Canvas */
+const mainCanvas = document.getElementById("main-canvas") as HTMLCanvasElement;
+const mainGL = mainCanvas.getContext("webgl");
+
+/* Setup Viewport */
+resizeCanvasToDisplaySize(mainGL.canvas as HTMLCanvasElement);
+mainGL.viewport(0, 0, mainGL.canvas.width, mainGL.canvas.height);
+
+/* Clear Color and Buffer */
+mainGL.clear(mainGL.COLOR_BUFFER_BIT | mainGL.DEPTH_BUFFER_BIT);
+
+/* Turn On Culling */
+mainGL.enable(mainGL.CULL_FACE);
+
+/* Enable the Depth Buffer */
+mainGL.enable(mainGL.DEPTH_TEST);
+
+/* Add Vertex and Fragment Shader */
+const vertexShader = createShader(
+  mainGL,
+  mainGL.VERTEX_SHADER,
+  vertexShaderSource
+);
 const fragmentShader = createShader(
-  gl,
-  gl.FRAGMENT_SHADER,
+  mainGL,
+  mainGL.FRAGMENT_SHADER,
   fragmentShaderSource
 );
 
 /* Setup Program */
-const program = createProgram(gl, vertexShader, fragmentShader);
+const mainProgram = createProgram(mainGL, vertexShader, fragmentShader);
 
 /* Setup Program Info */
 const programInfo: ProgramInfo = {
   attribLocations: {
-    positionLocation: gl.getAttribLocation(program, "a_position"),
-    colorLocation: gl.getAttribLocation(program, "a_color"),
-    normalLocation: gl.getAttribLocation(program, "a_normal"),
+    positionLocation: mainGL.getAttribLocation(mainProgram, "a_position"),
+    colorLocation: mainGL.getAttribLocation(mainProgram, "a_color"),
+    normalLocation: mainGL.getAttribLocation(mainProgram, "a_normal"),
   },
   uniformLocations: {
-    worldViewProjectionLocation: gl.getUniformLocation(
-      program,
+    worldViewProjectionLocation: mainGL.getUniformLocation(
+      mainProgram,
       "u_worldViewProjection"
     ),
-    worldInverseTransposeLocation: gl.getUniformLocation(
-      program,
+    worldInverseTransposeLocation: mainGL.getUniformLocation(
+      mainProgram,
       "u_worldInverseTranspose"
     ),
-    ambientLightColorLocation: gl.getUniformLocation(
-      program,
+    ambientLightColorLocation: mainGL.getUniformLocation(
+      mainProgram,
       "u_ambientLightColor"
     ),
-    reverseLightDirectionLocation: gl.getUniformLocation(
-      program,
+    reverseLightDirectionLocation: mainGL.getUniformLocation(
+      mainProgram,
       "u_reverseLightDirection"
     ),
-    shadingLocation: gl.getUniformLocation(program, "u_shading"),
+    shadingLocation: mainGL.getUniformLocation(mainProgram, "u_shading"),
   },
 };
 
 /* Setup Buffer */
 const programBuffer: ProgramBuffer = {
-  positionBuffer: gl.createBuffer(),
-  colorBuffer: gl.createBuffer(),
-  normalBuffer: gl.createBuffer(),
+  positionBuffer: mainGL.createBuffer(),
+  colorBuffer: mainGL.createBuffer(),
+  normalBuffer: mainGL.createBuffer(),
 };
 
 /* Setup Renderer */
-const renderer = new Renderer(gl, program, programInfo, programBuffer);
+const renderer = new Renderer(mainGL, mainProgram, programInfo, programBuffer);
 
 /* Get HTML Element */
 /* Transformation Elements */
@@ -170,24 +175,24 @@ let directionalLight: Light;
 let currentShape: string = JSON.stringify(require("../shapes/cube.json"));
 let offsetTranslate = {
   orthographic: {
-    x: canvas.width / 2,
-    y: canvas.height / 3,
+    x: mainCanvas.width / 2,
+    y: mainCanvas.height / 3,
   },
   perspective: {
     x: 0,
     y: 0,
   },
   oblique: {
-    x: canvas.width / 1.7,
-    y: canvas.height / 5.5,
+    x: mainCanvas.width / 1.7,
+    y: mainCanvas.height / 5.5,
   },
 };
 let projectionType: ProjectionType = "orthographic";
 let projectionParams: ProjectionParams = {
   orthographic: {
     left: 0,
-    right: (gl.canvas as HTMLCanvasElement).clientWidth,
-    bottom: (gl.canvas as HTMLCanvasElement).clientHeight,
+    right: (mainGL.canvas as HTMLCanvasElement).clientWidth,
+    bottom: (mainGL.canvas as HTMLCanvasElement).clientHeight,
     top: 0,
     near: 2000,
     far: -2000,
@@ -195,8 +200,8 @@ let projectionParams: ProjectionParams = {
   perspective: {
     fieldOfView: degToRad(60),
     aspect:
-      (gl.canvas as HTMLCanvasElement).clientWidth /
-      (gl.canvas as HTMLCanvasElement).clientHeight,
+      (mainGL.canvas as HTMLCanvasElement).clientWidth /
+      (mainGL.canvas as HTMLCanvasElement).clientHeight,
     near: 1,
     far: 2000,
   },
@@ -204,8 +209,8 @@ let projectionParams: ProjectionParams = {
     factor: 0.1,
     angle: degToRad(15),
     ortho_left: 0,
-    ortho_right: (gl.canvas as HTMLCanvasElement).clientWidth,
-    ortho_bottom: (gl.canvas as HTMLCanvasElement).clientHeight,
+    ortho_right: (mainGL.canvas as HTMLCanvasElement).clientWidth,
+    ortho_bottom: (mainGL.canvas as HTMLCanvasElement).clientHeight,
     ortho_top: 0,
     ortho_near: 2000,
     ortho_far: -2000,

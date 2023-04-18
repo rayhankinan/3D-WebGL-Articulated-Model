@@ -1,7 +1,7 @@
 import ShapeInterface from "Interfaces/shape-interface";
 import TransformationInterface from "Interfaces/transformation-interface";
-import Point from "Operations/point";
-import Color from "Operations/color";
+import Point from "Objects/point";
+import Color from "Objects/color";
 import Transformation from "Operations/transformation";
 import Projection from "Operations/projection";
 import ProjectionParams from "Types/projection-params";
@@ -175,6 +175,7 @@ class Shape implements ShapeInterface, TransformationInterface {
       this.findCenter()
     );
 
+    /* Get Inverse Transpose Matrix */
     const inverseTransposeMatrix = matrix.inverse().transpose();
 
     /* Add Lookat to Matrix */

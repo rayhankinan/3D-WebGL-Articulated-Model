@@ -1,5 +1,5 @@
 import VectorInterface from "Interfaces/vector-interface";
-import Coordinate from "Operations/coordinate";
+import Coordinate from "Objects/coordinate";
 import CLOSEST_TO_ZERO from "Constants/closest-to-zero";
 
 class Vector extends Coordinate implements VectorInterface {

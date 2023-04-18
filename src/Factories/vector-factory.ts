@@ -1,5 +1,5 @@
 import VectorInterface from "Interfaces/vector-interface";
-import Vector from "Operations/vector";
+import Vector from "Objects/vector";
 
 class VectorFactory {
   public static fromInterface(vector: VectorInterface): Vector {

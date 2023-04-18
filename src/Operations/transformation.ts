@@ -1,5 +1,5 @@
-import Matrix from "Operations/matrix";
-import Coordinate from "Operations/coordinate";
+import Matrix from "Objects/matrix";
+import Coordinate from "Objects/coordinate";
 
 class Transformation {
   public static translation(tx: number, ty: number, tz: number): Matrix {

@@ -1,5 +1,5 @@
 import MatrixInterface from "Interfaces/matrix-interface";
-import Coordinate from "Operations/coordinate";
+import Coordinate from "Objects/coordinate";
 
 class Matrix implements MatrixInterface {
   constructor(

@@ -55,18 +55,28 @@ html {
   border: 3px solid black;
 }
 
-#camera-parameter,
-#file-parameter {
+#camera-parameter {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
   align-items: center;
   justify-content: center;
+  row-gap: 1vh;
+  column-gap: 2vw;
+}
+
+#option-parameter {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  justify-content: center;
+  row-gap: 1vh;
   column-gap: 2vw;
 }
 
 #center-side {
-  margin-top: 10vh;
+  margin-top: 5vh;
   width: 20vw;
 }
 
@@ -96,7 +106,14 @@ html {
 
 #transformation-sliders {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-rows: repeat(1, minmax(0, auto));
+  row-gap: 5px;
+}
+
+#transformation {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, auto));
   row-gap: 5px;
 }
