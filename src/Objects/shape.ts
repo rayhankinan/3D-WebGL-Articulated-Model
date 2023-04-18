@@ -2,15 +2,16 @@ import ShapeInterface from "Interfaces/shape-interface";
 import TransformationInterface from "Interfaces/transformation-interface";
 import Point from "Objects/point";
 import Color from "Objects/color";
+import Matrix from "Objects/matrix";
+import Face from "Objects/face";
+import Camera from "Objects/camera";
+import Light from "Objects/light";
 import Transformation from "Operations/transformation";
 import Projection from "Operations/projection";
 import ProjectionParams from "Types/projection-params";
 import ProjectionType from "Types/projection-type";
 import ShaderStatus from "Types/shader-status";
 import ProgramParam from "Types/program-param";
-import Face from "Objects/face";
-import Camera from "Objects/camera";
-import Light from "Objects/light";
 import Renderer from "Utils/renderer";
 
 class Shape implements ShapeInterface, TransformationInterface {
@@ -27,6 +28,7 @@ class Shape implements ShapeInterface, TransformationInterface {
     public sz: number
   ) {}
 
+  /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
   public findCenter(): Point {
     let totalX = 0;
     let totalY = 0;
@@ -44,24 +46,6 @@ class Shape implements ShapeInterface, TransformationInterface {
       totalX / this.arrayOfFace.length,
       totalY / this.arrayOfFace.length,
       totalZ / this.arrayOfFace.length
-    );
-  }
-
-  public findLength(): number {
-    return Math.max(
-      ...this.arrayOfFace.map((f) => f.findMaxX() - f.findMinX())
-    );
-  }
-
-  public findWidth(): number {
-    return Math.max(
-      ...this.arrayOfFace.map((f) => f.findMaxY() - f.findMinY())
-    );
-  }
-
-  public findDepth(): number {
-    return Math.max(
-      ...this.arrayOfFace.map((f) => f.findMaxZ() - f.findMinZ())
     );
   }
 
@@ -101,25 +85,6 @@ class Shape implements ShapeInterface, TransformationInterface {
     this.sz = delta;
   }
 
-  public applyTransformation(): Shape {
-    const matrix = Transformation.general(
-      this.tx,
-      this.ty,
-      this.tz,
-      this.angleX,
-      this.angleY,
-      this.angleZ,
-      this.sx,
-      this.sy,
-      this.sz,
-      this.findCenter()
-    );
-
-    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
-
-    return new Shape(arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
-  }
-
   public getRawPosition(): Float32Array {
     const positionArray = this.arrayOfFace.flatMap((f) => f.getRawPosition());
 
@@ -150,19 +115,10 @@ class Shape implements ShapeInterface, TransformationInterface {
     return this.arrayOfFace.flatMap((f) => f.arrayOfPoint).length;
   }
 
-  public render<T extends ProjectionType>(
-    renderer: Renderer,
-    projectionType: T,
-    params: ProjectionParams[T],
-    camera: Camera,
-    ambientColor: Color,
-    directionalLight: Light,
-    shaderStatus: ShaderStatus,
-    offsetTranslateX: number,
-    offsetTranslateY: number
-  ): void {
-    /* Get Matrix */
-    let matrix = Transformation.general(
+  public getLocalMatrix(): Matrix {
+    const pivot = new Point(0, 0, 0);
+
+    return Transformation.general(
       this.tx,
       this.ty,
       this.tz,
@@ -172,8 +128,30 @@ class Shape implements ShapeInterface, TransformationInterface {
       this.sx,
       this.sy,
       this.sz,
-      this.findCenter()
+      pivot
     );
+  }
+
+  public applyTransformation(): Shape {
+    const matrix = this.getLocalMatrix();
+    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
+
+    return new Shape(arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
+  }
+
+  public render<T extends ProjectionType>(
+    renderer: Renderer,
+    projectionType: T,
+    params: ProjectionParams[T],
+    camera: Camera,
+    offsetTranslateX: number,
+    offsetTranslateY: number,
+    ambientColor: Color,
+    directionalLight: Light,
+    shaderStatus: ShaderStatus
+  ): void {
+    /* Get Matrix */
+    let matrix = this.getLocalMatrix();
 
     /* Get Inverse Transpose Matrix */
     const inverseTransposeMatrix = matrix.inverse().transpose();

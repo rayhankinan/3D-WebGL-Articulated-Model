@@ -183,8 +183,8 @@ let offsetTranslate = {
     y: 0,
   },
   oblique: {
-    x: mainCanvas.width / 1.7,
-    y: mainCanvas.height / 5.5,
+    x: mainCanvas.width / 1.5,
+    y: 0,
   },
 };
 let projectionType: ProjectionType = "orthographic";
@@ -263,11 +263,11 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
     projectionType,
     projectionParams[projectionType],
     camera,
+    offsetTranslate[projectionType].x,
+    offsetTranslate[projectionType].y,
     ambientColor,
     currentLight,
-    shaderStatus,
-    offsetTranslate[projectionType].x,
-    offsetTranslate[projectionType].y
+    shaderStatus
   );
 
   /* Render Recursively */
