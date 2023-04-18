@@ -3,7 +3,7 @@ import createProgram from "Utils/program";
 import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
 import Renderer from "Utils/renderer";
-import Shape from "Objects/shape";
+import Articulated from "Objects/articulated";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
 import Color from "Objects/color";
@@ -17,6 +17,7 @@ import FileSystem from "Files/file-system";
 import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
+import generateDefaultArticulated from "Main/default-articulated";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -168,11 +169,11 @@ const helpModal = document.getElementById("help-panel");
 const closeHelpButton = document.getElementById("close-help-btn");
 
 /* Global Variables */
-let object: Shape;
+let articulated: Articulated;
+let currentRawArticulated: string;
 let camera: Camera;
 let ambientColor: Color;
 let directionalLight: Light;
-let currentShape: string = JSON.stringify(require("../shapes/cube.json"));
 let offsetTranslate = {
   orthographic: {
     x: mainCanvas.width / 2,
@@ -236,19 +237,27 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
 
   /* Animate */
   if (animation) {
-    object.rotateY(
-      degToRad(radToDeg(object.angleY + animationSpeed * deltaTime) % 360)
+    articulated.root.rotateY(
+      degToRad(
+        radToDeg(articulated.root.angleY + animationSpeed * deltaTime) % 360
+      )
     );
-    object.rotateZ(
-      degToRad(radToDeg(object.angleZ + animationSpeed * deltaTime) % 360)
+    articulated.root.rotateZ(
+      degToRad(
+        radToDeg(articulated.root.angleZ + animationSpeed * deltaTime) % 360
+      )
     );
 
     /* Change Slider */
-    sliderAngleY.valueAsNumber = Math.round(radToDeg(object.angleY));
-    labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
+    sliderAngleY.valueAsNumber = Math.round(radToDeg(articulated.root.angleY));
+    labelAngleY.textContent = Math.round(
+      radToDeg(articulated.root.angleY)
+    ).toString();
 
-    sliderAngleZ.valueAsNumber = Math.round(radToDeg(object.angleZ));
-    labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
+    sliderAngleZ.valueAsNumber = Math.round(radToDeg(articulated.root.angleZ));
+    labelAngleZ.textContent = Math.round(
+      radToDeg(articulated.root.angleZ)
+    ).toString();
   }
 
   /* Get Current Light */
@@ -258,7 +267,7 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
       : directionalLight;
 
   /* Render Object */
-  object.render(
+  articulated.renderTree(
     renderer,
     projectionType,
     projectionParams[projectionType],
@@ -276,42 +285,48 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
 
 /* Initialize Default Value */
 const initializeDefaultValue = (
-  newObject: Shape,
+  newArticulated: Articulated,
   newCamera: Camera,
   newAmbientColor: Color,
   newDirectionalLight: Light
 ) => {
-  object = newObject;
+  articulated = newArticulated;
   camera = newCamera;
   ambientColor = newAmbientColor;
   directionalLight = newDirectionalLight;
 
-  sliderTranslateX.valueAsNumber = object.tx;
-  labelTranslateX.textContent = object.tx.toString();
+  sliderTranslateX.valueAsNumber = articulated.root.tx;
+  labelTranslateX.textContent = articulated.root.tx.toString();
 
-  sliderTranslateY.valueAsNumber = object.ty;
-  labelTranslateY.textContent = object.ty.toString();
+  sliderTranslateY.valueAsNumber = articulated.root.ty;
+  labelTranslateY.textContent = articulated.root.ty.toString();
 
-  sliderTranslateZ.valueAsNumber = object.tz;
-  labelTranslateZ.textContent = object.tz.toString();
+  sliderTranslateZ.valueAsNumber = articulated.root.tz;
+  labelTranslateZ.textContent = articulated.root.tz.toString();
 
-  sliderAngleX.valueAsNumber = Math.round(radToDeg(object.angleX));
-  labelAngleX.textContent = Math.round(radToDeg(object.angleX)).toString();
+  sliderAngleX.valueAsNumber = Math.round(radToDeg(articulated.root.angleX));
+  labelAngleX.textContent = Math.round(
+    radToDeg(articulated.root.angleX)
+  ).toString();
 
-  sliderAngleY.valueAsNumber = Math.round(radToDeg(object.angleY));
-  labelAngleY.textContent = Math.round(radToDeg(object.angleY)).toString();
+  sliderAngleY.valueAsNumber = Math.round(radToDeg(articulated.root.angleY));
+  labelAngleY.textContent = Math.round(
+    radToDeg(articulated.root.angleY)
+  ).toString();
 
-  sliderAngleZ.valueAsNumber = Math.round(radToDeg(object.angleZ));
-  labelAngleZ.textContent = Math.round(radToDeg(object.angleZ)).toString();
+  sliderAngleZ.valueAsNumber = Math.round(radToDeg(articulated.root.angleZ));
+  labelAngleZ.textContent = Math.round(
+    radToDeg(articulated.root.angleZ)
+  ).toString();
 
-  sliderScaleX.valueAsNumber = object.sx;
-  labelScaleX.textContent = object.sx.toString();
+  sliderScaleX.valueAsNumber = articulated.root.sx;
+  labelScaleX.textContent = articulated.root.sx.toString();
 
-  sliderScaleY.valueAsNumber = object.sy;
-  labelScaleY.textContent = object.sy.toString();
+  sliderScaleY.valueAsNumber = articulated.root.sy;
+  labelScaleY.textContent = articulated.root.sy.toString();
 
-  sliderScaleZ.valueAsNumber = object.sz;
-  labelScaleZ.textContent = object.sz.toString();
+  sliderScaleZ.valueAsNumber = articulated.root.sz;
+  labelScaleZ.textContent = articulated.root.sz.toString();
 
   sliderCamAngle.valueAsNumber = radToDeg(camera.angle);
   labelCamAngle.textContent = radToDeg(camera.angle).toString();
@@ -334,63 +349,63 @@ sliderTranslateX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelTranslateX.textContent = delta.toString();
-  object.moveX(delta);
+  articulated.root.moveX(delta);
 });
 
 sliderTranslateY.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelTranslateY.textContent = delta.toString();
-  object.moveY(delta);
+  articulated.root.moveY(delta);
 });
 
 sliderTranslateZ.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelTranslateZ.textContent = delta.toString();
-  object.moveZ(delta);
+  articulated.root.moveZ(delta);
 });
 
 sliderAngleX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelAngleX.textContent = delta.toString();
-  object.rotateX(degToRad(delta));
+  articulated.root.rotateX(degToRad(delta));
 });
 
 sliderAngleY.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelAngleY.textContent = delta.toString();
-  object.rotateY(degToRad(delta));
+  articulated.root.rotateY(degToRad(delta));
 });
 
 sliderAngleZ.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelAngleZ.textContent = delta.toString();
-  object.rotateZ(degToRad(delta));
+  articulated.root.rotateZ(degToRad(delta));
 });
 
 sliderScaleX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelScaleX.textContent = delta.toString();
-  object.scaleX(delta);
+  articulated.root.scaleX(delta);
 });
 
 sliderScaleY.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelScaleY.textContent = delta.toString();
-  object.scaleY(delta);
+  articulated.root.scaleY(delta);
 });
 
 sliderScaleZ.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelScaleZ.textContent = delta.toString();
-  object.scaleZ(delta);
+  articulated.root.scaleZ(delta);
 });
 
 listOfProjection.addEventListener("change", () => {
@@ -415,21 +430,22 @@ sliderCamRadius.addEventListener("input", (event) => {
   camera.radius = delta;
 });
 
-loadButton.addEventListener("click", () => {
-  FileHandling.upload((text) => {
-    currentShape = text;
-    initializeDefaultValue(
-      FileSystem.loadShape(currentShape),
-      generateDefaultCamera(),
-      generateDefaultAmbientColor(),
-      generateDefaultDirectionalLight()
-    );
-  });
-});
+// loadButton.addEventListener("click", () => {
+//   FileHandling.upload((text) => {
+//     currentRawArticulated = text;
 
-saveButton.addEventListener("click", () => {
-  FileHandling.download(FileSystem.serializeShape(object));
-});
+//     initializeDefaultValue(
+//       FileSystem.loadShape(currentRawArticulated),
+//       generateDefaultCamera(),
+//       generateDefaultAmbientColor(),
+//       generateDefaultDirectionalLight()
+//     );
+//   });
+// });
+
+// saveButton.addEventListener("click", () => {
+//   FileHandling.download(FileSystem.serializeShape(articulated));
+// });
 
 /* Shading and Animation */
 shadingModeButton.addEventListener("click", () => {
@@ -463,7 +479,7 @@ animationModeButton.addEventListener("click", () => {
 /* Reset State */
 resetButton.addEventListener("click", () => {
   initializeDefaultValue(
-    FileSystem.loadShape(currentShape),
+    generateDefaultArticulated(),
     generateDefaultCamera(),
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
@@ -487,7 +503,7 @@ window.onclick = function (event) {
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(
-    FileSystem.loadShape(currentShape),
+    generateDefaultArticulated(),
     generateDefaultCamera(),
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()

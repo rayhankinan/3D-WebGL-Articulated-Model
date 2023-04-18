@@ -29,25 +29,25 @@ class Shape implements ShapeInterface, TransformationInterface {
   ) {}
 
   /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
-  public findCenter(): Point {
-    let totalX = 0;
-    let totalY = 0;
-    let totalZ = 0;
+  // public findCenter(): Point {
+  //   let totalX = 0;
+  //   let totalY = 0;
+  //   let totalZ = 0;
 
-    for (const f of this.arrayOfFace) {
-      const [fX, fY, fZ] = f.findCenter().getTriplet();
+  //   for (const f of this.arrayOfFace) {
+  //     const [fX, fY, fZ] = f.findCenter().getTriplet();
 
-      totalX += fX;
-      totalY += fY;
-      totalZ += fZ;
-    }
+  //     totalX += fX;
+  //     totalY += fY;
+  //     totalZ += fZ;
+  //   }
 
-    return new Point(
-      totalX / this.arrayOfFace.length,
-      totalY / this.arrayOfFace.length,
-      totalZ / this.arrayOfFace.length
-    );
-  }
+  //   return new Point(
+  //     totalX / this.arrayOfFace.length,
+  //     totalY / this.arrayOfFace.length,
+  //     totalZ / this.arrayOfFace.length
+  //   );
+  // }
 
   public moveX(delta: number): void {
     this.tx = delta;
@@ -140,125 +140,125 @@ class Shape implements ShapeInterface, TransformationInterface {
   }
 
   /* TODO: BISA HILANGKAN INI JIKA BERHASIL */
-  public render<T extends ProjectionType>(
-    renderer: Renderer,
-    projectionType: T,
-    params: ProjectionParams[T],
-    camera: Camera,
-    offsetTranslateX: number,
-    offsetTranslateY: number,
-    ambientColor: Color,
-    directionalLight: Light,
-    shaderStatus: ShaderStatus
-  ): void {
-    /* Get Matrix */
-    let matrix = this.getLocalMatrix();
+  // public render<T extends ProjectionType>(
+  //   renderer: Renderer,
+  //   projectionType: T,
+  //   params: ProjectionParams[T],
+  //   camera: Camera,
+  //   offsetTranslateX: number,
+  //   offsetTranslateY: number,
+  //   ambientColor: Color,
+  //   directionalLight: Light,
+  //   shaderStatus: ShaderStatus
+  // ): void {
+  //   /* Get Matrix */
+  //   let matrix = this.getLocalMatrix();
 
-    /* Get Inverse Transpose Matrix */
-    const inverseTransposeMatrix = matrix.inverse().transpose();
+  //   /* Get Inverse Transpose Matrix */
+  //   const inverseTransposeMatrix = matrix.inverse().transpose();
 
-    /* Add Lookat to Matrix */
-    matrix = camera.lookAt().multiplyMatrix(matrix);
+  //   /* Add Lookat to Matrix */
+  //   matrix = camera.lookAt().multiplyMatrix(matrix);
 
-    /* Offset Position to Center of Object */
-    matrix = Transformation.translation(
-      offsetTranslateX,
-      offsetTranslateY,
-      0
-    ).multiplyMatrix(matrix);
+  //   /* Offset Position to Center of Object */
+  //   matrix = Transformation.translation(
+  //     offsetTranslateX,
+  //     offsetTranslateY,
+  //     0
+  //   ).multiplyMatrix(matrix);
 
-    /* Add Projection to Matrix */
-    switch (projectionType) {
-      case "orthographic":
-        const {
-          left,
-          right,
-          bottom,
-          top,
-          near: nearOrthograpic,
-          far: farOrthographic,
-        } = params as ProjectionParams["orthographic"];
+  //   /* Add Projection to Matrix */
+  //   switch (projectionType) {
+  //     case "orthographic":
+  //       const {
+  //         left,
+  //         right,
+  //         bottom,
+  //         top,
+  //         near: nearOrthograpic,
+  //         far: farOrthographic,
+  //       } = params as ProjectionParams["orthographic"];
 
-        matrix = Projection.orthographic(
-          left,
-          right,
-          bottom,
-          top,
-          nearOrthograpic,
-          farOrthographic
-        ).multiplyMatrix(matrix);
-        break;
-      case "perspective":
-        const {
-          fieldOfView,
-          aspect,
-          near: nearPerspective,
-          far: farPerspective,
-        } = params as ProjectionParams["perspective"];
+  //       matrix = Projection.orthographic(
+  //         left,
+  //         right,
+  //         bottom,
+  //         top,
+  //         nearOrthograpic,
+  //         farOrthographic
+  //       ).multiplyMatrix(matrix);
+  //       break;
+  //     case "perspective":
+  //       const {
+  //         fieldOfView,
+  //         aspect,
+  //         near: nearPerspective,
+  //         far: farPerspective,
+  //       } = params as ProjectionParams["perspective"];
 
-        matrix = Projection.perspective(
-          fieldOfView,
-          aspect,
-          nearPerspective,
-          farPerspective
-        ).multiplyMatrix(matrix);
-        break;
-      case "oblique":
-        const {
-          factor,
-          angle,
-          ortho_left,
-          ortho_right,
-          ortho_bottom,
-          ortho_top,
-          ortho_near,
-          ortho_far,
-        } = params as ProjectionParams["oblique"];
+  //       matrix = Projection.perspective(
+  //         fieldOfView,
+  //         aspect,
+  //         nearPerspective,
+  //         farPerspective
+  //       ).multiplyMatrix(matrix);
+  //       break;
+  //     case "oblique":
+  //       const {
+  //         factor,
+  //         angle,
+  //         ortho_left,
+  //         ortho_right,
+  //         ortho_bottom,
+  //         ortho_top,
+  //         ortho_near,
+  //         ortho_far,
+  //       } = params as ProjectionParams["oblique"];
 
-        matrix = Projection.oblique(
-          factor,
-          angle,
-          ortho_left,
-          ortho_right,
-          ortho_bottom,
-          ortho_top,
-          ortho_near,
-          ortho_far
-        ).multiplyMatrix(matrix);
-        break;
-    }
+  //       matrix = Projection.oblique(
+  //         factor,
+  //         angle,
+  //         ortho_left,
+  //         ortho_right,
+  //         ortho_bottom,
+  //         ortho_top,
+  //         ortho_near,
+  //         ortho_far
+  //       ).multiplyMatrix(matrix);
+  //       break;
+  //   }
 
-    const rawMatrix = matrix.flatten();
-    const rawInverseTransposeMatrix = inverseTransposeMatrix.flatten();
+  //   const rawMatrix = matrix.flatten();
+  //   const rawInverseTransposeMatrix = inverseTransposeMatrix.flatten();
 
-    /* Get Ambient Color */
-    const rawAmbientColor = ambientColor.getTriplet();
+  //   /* Get Ambient Color */
+  //   const rawAmbientColor = ambientColor.getTriplet();
 
-    /* Get Directional Light */
-    const rawDirectionalLight = directionalLight.getRawDirection();
+  //   /* Get Directional Light */
+  //   const rawDirectionalLight = directionalLight.getRawDirection();
 
-    /* Create Program Parameter */
-    const programParam: ProgramParam = {
-      attributes: {
-        rawPosition: this.getRawPosition(),
-        rawColor: this.getRawColor(),
-        rawNormal: this.getRawNormal(),
-      },
-      uniforms: {
-        rawMatrix,
-        rawInverseTransposeMatrix,
-        rawAmbientColor,
-        rawDirectionalLight,
-        shaderStatus,
-      },
-    };
+  //   /* Create Program Parameter */
+  //   const programParam: ProgramParam = {
+  //     attributes: {
+  //       rawPosition: this.getRawPosition(),
+  //       rawColor: this.getRawColor(),
+  //       rawNormal: this.getRawNormal(),
+  //     },
+  //     uniforms: {
+  //       rawMatrix,
+  //       rawInverseTransposeMatrix,
+  //       rawAmbientColor,
+  //       rawDirectionalLight,
+  //       shaderStatus,
+  //     },
+  //   };
 
-    /* Count Vertex */
-    const count = this.countVertex();
+  //   /* Count Vertex */
+  //   const count = this.countVertex();
 
-    /* Render */
-    renderer.render(programParam, count);
-  }
+  //   /* Render */
+  //   renderer.render(programParam, count);
+  // }
 }
 
 export default Shape;

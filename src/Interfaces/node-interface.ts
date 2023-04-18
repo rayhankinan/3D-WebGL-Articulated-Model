@@ -1,8 +1,7 @@
 import ShapeInterface from "Interfaces/shape-interface";
 
-interface NodeInterface {
+interface NodeInterface extends ShapeInterface {
   readonly index: string;
-  readonly shape: ShapeInterface;
   readonly children: NodeInterface[];
 }
 

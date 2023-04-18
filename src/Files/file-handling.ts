@@ -1,6 +1,6 @@
 class FileHandling {
   public static download(text: string): void {
-    const data = new File([text], "articulated-shape.json", {
+    const data = new File([text], "articulated.json", {
       type: "application/json",
     });
 

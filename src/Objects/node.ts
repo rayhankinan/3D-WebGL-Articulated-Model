@@ -1,9 +1,11 @@
 import NodeInterface from "Interfaces/node-interface";
+import TransformationInterface from "Main/Interfaces/transformation-interface";
 import Color from "Objects/color";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
 import Shape from "Objects/shape";
 import Matrix from "Objects/matrix";
+import Face from "Objects/face";
 import Transformation from "Operations/transformation";
 import Projection from "Operations/projection";
 import ProjectionParams from "Types/projection-params";
@@ -12,12 +14,23 @@ import ShaderStatus from "Types/shader-status";
 import ProgramParam from "Types/program-param";
 import Renderer from "Utils/renderer";
 
-class Node implements NodeInterface {
+class Node extends Shape implements NodeInterface {
   constructor(
     public readonly index: string,
-    public readonly shape: Shape,
-    public readonly children: Node[]
-  ) {}
+    public readonly children: Node[],
+    public readonly arrayOfFace: Face[],
+    public tx: number,
+    public ty: number,
+    public tz: number,
+    public angleX: number,
+    public angleY: number,
+    public angleZ: number,
+    public sx: number,
+    public sy: number,
+    public sz: number
+  ) {
+    super(arrayOfFace, tx, ty, tz, angleX, angleY, angleZ, sx, sy, sz);
+  }
 
   public findNode(index: string): Node {
     if (this.index === index) {
@@ -51,7 +64,7 @@ class Node implements NodeInterface {
     currentWorldMatrix: Matrix
   ): void {
     /* Get Matrix */
-    const localMatrix = this.shape.getLocalMatrix();
+    const localMatrix = this.getLocalMatrix();
 
     /* Initialize with World Matrix */
     let matrix = currentWorldMatrix.multiplyMatrix(localMatrix);
@@ -142,9 +155,9 @@ class Node implements NodeInterface {
     /* Create Program Parameter */
     const programParam: ProgramParam = {
       attributes: {
-        rawPosition: this.shape.getRawPosition(),
-        rawColor: this.shape.getRawColor(),
-        rawNormal: this.shape.getRawNormal(),
+        rawPosition: this.getRawPosition(),
+        rawColor: this.getRawColor(),
+        rawNormal: this.getRawNormal(),
       },
       uniforms: {
         rawMatrix,
@@ -156,7 +169,7 @@ class Node implements NodeInterface {
     };
 
     /* Count Vertex */
-    const count = this.shape.countVertex();
+    const count = this.countVertex();
 
     /* Render */
     renderer.render(programParam, count);
@@ -190,7 +203,7 @@ class Node implements NodeInterface {
 
     /* Change World Matrix for Children */
     const childrenWorldMatrix = currentWorldMatrix.multiplyMatrix(
-      this.shape.getLocalMatrix()
+      this.getLocalMatrix()
     );
 
     /* Render Children */
