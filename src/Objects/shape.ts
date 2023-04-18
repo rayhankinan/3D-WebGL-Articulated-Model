@@ -7,9 +7,13 @@ import Projection from "Operations/projection";
 import ProjectionParams from "Types/projection-params";
 import ProjectionType from "Types/projection-type";
 import ShaderStatus from "Types/shader-status";
+import ProgramInfo from "Types/program-info";
+import ProgramBuffer from "Types/program-buffer";
+import ProgramParam from "Types/program-param";
 import Face from "Objects/face";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
+import Renderer from "Utils/renderer";
 
 class Shape implements ShapeInterface, TransformationInterface {
   constructor(
@@ -118,50 +122,40 @@ class Shape implements ShapeInterface, TransformationInterface {
     return new Shape(arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
   }
 
-  public addPosition(gl: WebGLRenderingContext): void {
+  public getRawPosition(): Float32Array {
     const positionArray = this.arrayOfFace.flatMap((f) => f.getRawPosition());
 
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array(positionArray),
-      gl.STATIC_DRAW
-    );
+    return new Float32Array(positionArray);
   }
 
-  public addColor(gl: WebGLRenderingContext): void {
+  public getRawColor(): Float32Array {
     const colorArray = this.arrayOfFace.flatMap((f) =>
       Array<readonly [number, number, number]>(f.arrayOfPoint.length)
         .fill(f.getRawColor())
         .flat()
     );
 
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array(colorArray),
-      gl.STATIC_DRAW
-    );
+    return new Float32Array(colorArray);
   }
 
-  public addNormal(gl: WebGLRenderingContext): void {
+  public getRawNormal(): Float32Array {
     const normalArray = this.arrayOfFace.flatMap((f) =>
       Array<readonly [number, number, number]>(f.arrayOfPoint.length)
         .fill(f.findNormal().getTriplet())
         .flat()
     );
 
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array(normalArray),
-      gl.STATIC_DRAW
-    );
+    return new Float32Array(normalArray);
+  }
+
+  public countVertex(): number {
+    return this.arrayOfFace.flatMap((f) => f.arrayOfPoint).length;
   }
 
   public render<T extends ProjectionType>(
-    gl: WebGLRenderingContext,
-    program: WebGLProgram,
-    positionBuffer: WebGLBuffer,
-    colorBuffer: WebGLBuffer,
-    normalBuffer: WebGLBuffer,
+    renderer: Renderer,
+    programInfo: ProgramInfo,
+    programBuffer: ProgramBuffer,
     projectionType: T,
     params: ProjectionParams[T],
     camera: Camera,
@@ -171,87 +165,6 @@ class Shape implements ShapeInterface, TransformationInterface {
     offsetTranslateX: number,
     offsetTranslateY: number
   ): void {
-    /* Lookup Attribute */
-    const positionLocation = gl.getAttribLocation(program, "a_position");
-    const colorLocation = gl.getAttribLocation(program, "a_color");
-    const normalLocation = gl.getAttribLocation(program, "a_normal");
-
-    /* Lookup Uniform */
-    const worldViewProjectionLocation = gl.getUniformLocation(
-      program,
-      "u_worldViewProjection"
-    );
-    const worldInverseTransposeLocation = gl.getUniformLocation(
-      program,
-      "u_worldInverseTranspose"
-    );
-    const reverseLightDirectionLocation = gl.getUniformLocation(
-      program,
-      "u_reverseLightDirection"
-    );
-    const ambientLightColor = gl.getUniformLocation(
-      program,
-      "u_ambientLightColor"
-    );
-    const shadingLocation = gl.getUniformLocation(program, "u_shading");
-
-    /* Setup Position */
-    gl.enableVertexAttribArray(positionLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    this.addPosition(gl);
-
-    const positionSize = 3; /* 3 components per iteration */
-    const positionType = gl.FLOAT; /* The data is 32 bit float */
-    const positionNormalized = false; /* Don't normalize the data */
-    const positionStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
-    const positionOffset = 0; /* Start at the beginning of the buffer */
-    gl.vertexAttribPointer(
-      positionLocation,
-      positionSize,
-      positionType,
-      positionNormalized,
-      positionStride,
-      positionOffset
-    );
-
-    /* Setup Color */
-    gl.enableVertexAttribArray(colorLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    this.addColor(gl);
-
-    const colorSize = 3; /* 3 components per iteration */
-    const colorType = gl.FLOAT; /* The data is 32 bit float */
-    const colorNormalized = false; /* Normalize the data */
-    const colorStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
-    const colorOffset = 0; /* Start at the beginning of the buffer */
-    gl.vertexAttribPointer(
-      colorLocation,
-      colorSize,
-      colorType,
-      colorNormalized,
-      colorStride,
-      colorOffset
-    );
-
-    /* Setup Normal */
-    gl.enableVertexAttribArray(normalLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-    this.addNormal(gl);
-
-    const normalSize = 3; /* 3 components per iteration */
-    const normalType = gl.FLOAT; /* The data is 32 bit float */
-    const normalNormalized = false; /* Don't normalize the data */
-    const normalStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
-    const normalOffset = 0; /* Start at the beginning of the buffer */
-    gl.vertexAttribPointer(
-      normalLocation,
-      normalSize,
-      normalType,
-      normalNormalized,
-      normalStride,
-      normalOffset
-    );
-
     /* Get Matrix */
     let matrix = Transformation.general(
       this.tx,
@@ -268,15 +181,17 @@ class Shape implements ShapeInterface, TransformationInterface {
 
     const inverseTransposeMatrix = matrix.inverse().transpose();
 
+    /* Add Lookat to Matrix */
     matrix = camera.lookAt().multiplyMatrix(matrix);
 
-    /* Offset position to center object */
+    /* Offset Position to Center of Object */
     matrix = Transformation.translation(
       offsetTranslateX,
       offsetTranslateY,
       0
     ).multiplyMatrix(matrix);
 
+    /* Add Projection to Matrix */
     switch (projectionType) {
       case "orthographic":
         const {
@@ -340,34 +255,33 @@ class Shape implements ShapeInterface, TransformationInterface {
     const rawMatrix = matrix.flatten();
     const rawInverseTransposeMatrix = inverseTransposeMatrix.flatten();
 
-    /* Set Matrix Value */
-    gl.uniformMatrix4fv(worldViewProjectionLocation, false, rawMatrix);
-    gl.uniformMatrix4fv(
-      worldInverseTransposeLocation,
-      false,
-      rawInverseTransposeMatrix
-    );
-
     /* Get Ambient Color */
     const rawAmbientColor = ambientColor.getTriplet();
-
-    /* Set Ambient Color Value */
-    gl.uniform3fv(ambientLightColor, rawAmbientColor);
 
     /* Get Directional Light */
     const rawDirectionalLight = directionalLight.getRawDirection();
 
-    /* Set Directional Light Value */
-    gl.uniform3fv(reverseLightDirectionLocation, rawDirectionalLight);
+    /* Create Program Parameter */
+    const programParam: ProgramParam = {
+      attributes: {
+        rawPosition: this.getRawPosition(),
+        rawColor: this.getRawColor(),
+        rawNormal: this.getRawNormal(),
+      },
+      uniforms: {
+        rawMatrix,
+        rawInverseTransposeMatrix,
+        rawAmbientColor,
+        rawDirectionalLight,
+        shaderStatus,
+      },
+    };
 
-    gl.uniform1i(shadingLocation, shaderStatus);
+    /* Count Vertex */
+    const count = this.countVertex();
 
-    /* Draw Shape */
-    const primitiveType = gl.TRIANGLES;
-    const offset = 0;
-    const count = this.arrayOfFace.flatMap((f) => f.arrayOfPoint).length;
-
-    gl.drawArrays(primitiveType, offset, count);
+    /* Render */
+    renderer.render(programInfo, programBuffer, programParam, count);
   }
 }
 

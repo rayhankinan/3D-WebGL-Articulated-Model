@@ -2,6 +2,7 @@ import createShader from "Utils/shader";
 import createProgram from "Utils/program";
 import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
+import Renderer from "Utils/renderer";
 import Shape from "Objects/shape";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
@@ -9,6 +10,8 @@ import Color from "Operations/color";
 import ProjectionType from "Types/projection-type";
 import ProjectionParams from "Types/projection-params";
 import ShaderStatus from "Types/shader-status";
+import ProgramInfo from "Types/program-info";
+import ProgramBuffer from "Types/program-buffer";
 import FileHandling from "Files/file-handling";
 import FileSystem from "Files/file-system";
 import generateDefaultCamera from "Main/default-camera";
@@ -18,24 +21,6 @@ import generateDefaultDirectionalLight from "Main/default-directional-light";
 /* Main Canvas */
 const canvas = document.getElementById("main-canvas") as HTMLCanvasElement;
 const gl = canvas.getContext("webgl");
-
-const vertexShaderElement = document.getElementById("vertex-shader");
-const fragmentShaderElement = document.getElementById("fragment-shader");
-
-const vertexShaderSource = vertexShaderElement.textContent;
-const fragmentShaderSource = fragmentShaderElement.textContent;
-
-const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-const fragmentShader = createShader(
-  gl,
-  gl.FRAGMENT_SHADER,
-  fragmentShaderSource
-);
-
-const program = createProgram(gl, vertexShader, fragmentShader);
-
-/* Setup Program */
-gl.useProgram(program);
 
 /* Setup Viewport */
 resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
@@ -50,13 +35,64 @@ gl.enable(gl.CULL_FACE);
 /* Enable the Depth Buffer */
 gl.enable(gl.DEPTH_TEST);
 
+/* Setup Vertex dan Fragment Shader */
+const vertexShaderElement = document.getElementById("vertex-shader");
+const fragmentShaderElement = document.getElementById("fragment-shader");
+
+const vertexShaderSource = vertexShaderElement.textContent;
+const fragmentShaderSource = fragmentShaderElement.textContent;
+
+const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+const fragmentShader = createShader(
+  gl,
+  gl.FRAGMENT_SHADER,
+  fragmentShaderSource
+);
+
+/* Setup Program */
+const program = createProgram(gl, vertexShader, fragmentShader);
+
+/* Setup Renderer */
+const renderer = new Renderer(gl, program);
+renderer.use();
+
+/* Setup Program Info */
+const programInfo: ProgramInfo = {
+  attribLocations: {
+    positionLocation: gl.getAttribLocation(program, "a_position"),
+    colorLocation: gl.getAttribLocation(program, "a_color"),
+    normalLocation: gl.getAttribLocation(program, "a_normal"),
+  },
+  uniformLocations: {
+    worldViewProjectionLocation: gl.getUniformLocation(
+      program,
+      "u_worldViewProjection"
+    ),
+    worldInverseTransposeLocation: gl.getUniformLocation(
+      program,
+      "u_worldInverseTranspose"
+    ),
+    ambientLightColorLocation: gl.getUniformLocation(
+      program,
+      "u_ambientLightColor"
+    ),
+    reverseLightDirectionLocation: gl.getUniformLocation(
+      program,
+      "u_reverseLightDirection"
+    ),
+    shadingLocation: gl.getUniformLocation(program, "u_shading"),
+  },
+};
+
 /* Setup Buffer */
-const positionBuffer = gl.createBuffer();
-const colorBuffer = gl.createBuffer();
-const normalBuffer = gl.createBuffer();
+const programBuffer: ProgramBuffer = {
+  positionBuffer: gl.createBuffer(),
+  colorBuffer: gl.createBuffer(),
+  normalBuffer: gl.createBuffer(),
+};
 
 /* Get HTML Element */
-/* Transformation elements */
+/* Transformation Elements */
 const sliderTranslateX = document.getElementById(
   "slider-translate-x"
 ) as HTMLInputElement;
@@ -212,11 +248,9 @@ const renderCanvas = () => {
 
   /* Render Object */
   object.render(
-    gl,
-    program,
-    positionBuffer,
-    colorBuffer,
-    normalBuffer,
+    renderer,
+    programInfo,
+    programBuffer,
     projectionType,
     projectionParams[projectionType],
     camera,

@@ -11,7 +11,7 @@ function createShader(
   if (!success) {
     gl.deleteShader(shader);
 
-    throw Error("Failed to compile shader!");
+    throw new Error(`Could not compile shader: ${gl.getShaderInfoLog(shader)}`);
   }
 
   return shader;

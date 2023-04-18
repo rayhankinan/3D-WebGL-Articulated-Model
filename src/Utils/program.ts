@@ -4,6 +4,7 @@ function createProgram(
   fragmentShader: WebGLShader
 ): WebGLProgram {
   const program = gl.createProgram();
+
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
@@ -12,7 +13,9 @@ function createProgram(
   if (!success) {
     gl.deleteProgram(program);
 
-    throw Error("Failed to link program!");
+    throw new Error(
+      `Could not initialize shaders: ${gl.getProgramInfoLog(this.program)}`
+    );
   }
 
   return program;

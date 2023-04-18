@@ -2,7 +2,6 @@ import Matrix from "Operations/matrix";
 import Coordinate from "Operations/coordinate";
 
 class Projection {
-  /* SUDAH BISA */
   public static orthographic(
     left: number,
     right: number,
@@ -24,7 +23,6 @@ class Projection {
     return new Matrix(p1, p2, p3, p4);
   }
 
-  /* SUDAH BISA */
   public static perspective(
     fieldOfView: number,
     aspect: number,
@@ -43,7 +41,6 @@ class Projection {
     return new Matrix(p1, p2, p3, p4);
   }
 
-  /* SUDAH BISA */
   public static oblique(
     factor: number,
     angle: number,
