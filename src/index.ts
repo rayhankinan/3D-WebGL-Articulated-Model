@@ -284,6 +284,10 @@ const listOfProjection = document.getElementById(
   "list-of-projection"
 ) as HTMLSelectElement;
 
+const listOfMapping = document.getElementById(
+  "list-of-mapping"
+) as HTMLSelectElement;
+
 const loadButton = document.getElementById("load-btn");
 const saveButton = document.getElementById("save-btn");
 const shadingModeButton = document.getElementById("shading-mode-btn");
@@ -348,6 +352,8 @@ let projectionParams: ProjectionParams = {
 let shaderStatus: ShaderStatus = ShaderStatus.OFF;
 let animation: boolean = false;
 let then: DOMHighResTimeStamp = 0;
+
+let mappingMode = "texture";
 
 /* Global Constant */
 const animationSpeed = 1.2;
@@ -481,7 +487,6 @@ const loadEnvironment = (gl: WebGLRenderingContext) => {
   );
 };
 
-// loadEnvironment(mainGL);
 loadTexture(mainGL, "images/f-texture.png");
 
 /* Render Main Canvas */
@@ -536,7 +541,8 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
     offsetTranslate[projectionType].y,
     ambientColor,
     currentLight,
-    shaderStatus
+    shaderStatus,
+    mappingMode
   );
 
   /* Render Recursively */
@@ -697,6 +703,19 @@ listOfProjection.addEventListener("change", () => {
     .value as ProjectionType;
 
   projectionType = newProjectionType;
+});
+
+listOfMapping.addEventListener("change", () => {
+  const newMapping = listOfMapping.selectedOptions[0].value;
+
+  mappingMode = newMapping;
+  if (mappingMode == "texture") {
+    loadTexture(mainGL, "images/f-texture.png");
+  } else if (mappingMode == "environment") {
+    loadEnvironment(mainGL);
+  } else if (mappingMode == "bump") {
+    loadTexture(mainGL, "images/Bumped.png");
+  }
 });
 
 /* Camera Control Listener */

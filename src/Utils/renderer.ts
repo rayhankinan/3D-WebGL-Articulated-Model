@@ -10,7 +10,11 @@ class Renderer {
     public programBuffer: ProgramBuffer
   ) {}
 
-  public render(programParam: ProgramParam, count: number): void {
+  public render(
+    programParam: ProgramParam,
+    count: number,
+    mappingMode: string
+  ): void {
     /* Use Program */
     this.gl.useProgram(this.program);
 
@@ -144,13 +148,31 @@ class Renderer {
     /* Set Shader Status Uniform */
     this.gl.uniform1i(shadingLocation, shaderStatus);
 
-    /* Set Texture Uniform */
-    this.gl.uniform1i(textureLocation, 0);
-    this.gl.uniform1i(textureEnvLocation, 1);
+    if (mappingMode == "texture") {
+      /* Set Texture Uniform */
+      this.gl.uniform1i(textureLocation, 0);
+      this.gl.uniform1i(textureEnvLocation, 1);
 
-    /* Set Texture Mode Uniform */
-    this.gl.uniform1i(textureModeLocation1, 0);
-    this.gl.uniform1i(textureModeLocation2, 0);
+      /* Set Texture Mode Uniform */
+      this.gl.uniform1i(textureModeLocation1, 0);
+      this.gl.uniform1i(textureModeLocation2, 0);
+    } else if (mappingMode == "environment") {
+      /* Set Texture Uniform */
+      this.gl.uniform1i(textureLocation, 1);
+      this.gl.uniform1i(textureEnvLocation, 0);
+
+      /* Set Texture Mode Uniform */
+      this.gl.uniform1i(textureModeLocation1, 1);
+      this.gl.uniform1i(textureModeLocation2, 1);
+    } else if (mappingMode == "bump") {
+      /* Set Texture Uniform */
+      this.gl.uniform1i(textureLocation, 0);
+      this.gl.uniform1i(textureEnvLocation, 1);
+
+      /* Set Texture Mode Uniform */
+      this.gl.uniform1i(textureModeLocation1, 0);
+      this.gl.uniform1i(textureModeLocation2, 0);
+    }
 
     /* Draw Shape */
     const primitiveType = this.gl.TRIANGLES;

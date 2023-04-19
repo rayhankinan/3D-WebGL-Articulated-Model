@@ -31,7 +31,8 @@ class Articulated implements ArticulatedInterface {
     offsetTranslateY: number,
     ambientColor: Color,
     directionalLight: Light,
-    shaderStatus: ShaderStatus
+    shaderStatus: ShaderStatus,
+    mappingMode: string
   ): void {
     this.root.renderTree(
       renderer,
@@ -43,6 +44,7 @@ class Articulated implements ArticulatedInterface {
       ambientColor,
       directionalLight,
       shaderStatus,
+      mappingMode,
       Transformation.identity()
     );
   }

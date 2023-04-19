@@ -60,6 +60,7 @@ class Node extends Shape implements NodeInterface {
     ambientColor: Color,
     directionalLight: Light,
     shaderStatus: ShaderStatus,
+    mappingMode: string,
     currentWorldMatrix: Matrix
   ): void {
     /* Get Matrix */
@@ -172,7 +173,7 @@ class Node extends Shape implements NodeInterface {
     const count = this.countVertex();
 
     /* Render */
-    renderer.render(programParam, count);
+    renderer.render(programParam, count, mappingMode);
   }
 
   public renderTree<T extends ProjectionType>(
@@ -185,6 +186,7 @@ class Node extends Shape implements NodeInterface {
     ambientColor: Color,
     directionalLight: Light,
     shaderStatus: ShaderStatus,
+    mappingMode: string,
     currentWorldMatrix: Matrix
   ): void {
     /* Render Current Node */
@@ -198,6 +200,7 @@ class Node extends Shape implements NodeInterface {
       ambientColor,
       directionalLight,
       shaderStatus,
+      mappingMode,
       currentWorldMatrix
     );
 
@@ -218,6 +221,7 @@ class Node extends Shape implements NodeInterface {
         ambientColor,
         directionalLight,
         shaderStatus,
+        mappingMode,
         childrenWorldMatrix
       );
     }
