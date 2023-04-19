@@ -505,20 +505,18 @@ window.onclick = function (event) {
 };
 
 const addComponentTree = (componentTree :HTMLElement, root: Node, margin_left = 0) => {
-  const children = root.children;
-  console.log(children.length)
+  const button = document.createElement("button");
+  button.style.marginLeft = margin_left + "%";
+  button.textContent = root.index;
+  componentTree.appendChild(button);
+  componentTree.appendChild(document.createElement("br"));
   
-  for (const child of children) {
-    const button = document.createElement("button");
-    button.style.marginLeft = margin_left + "%";
-    button.textContent = child.index;
-    componentTree.appendChild(button);
-    componentTree.appendChild(document.createElement("br"));
-
-    if (child.children.length > 0) {
+  const children = root.children;
+  if (children.length > 0) {
+    for (const child of children) {
       addComponentTree(componentTree, child, margin_left + 5);
-    }
-  } 
+    } 
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
