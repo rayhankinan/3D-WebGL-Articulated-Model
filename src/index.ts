@@ -161,14 +161,12 @@ const listOfProjection = document.getElementById(
 
 const loadButton = document.getElementById("load-btn");
 const saveButton = document.getElementById("save-btn");
-
 const shadingModeButton = document.getElementById("shading-mode-btn");
 const animationModeButton = document.getElementById("animation-mode-btn");
 const resetButton = document.getElementById("reset-btn");
 const helpButton = document.getElementById("help-btn");
 const helpModal = document.getElementById("help-panel");
 const closeHelpButton = document.getElementById("close-help-btn");
-
 const componentTree = document.getElementById("component-tree");
 
 /* Global Variables */
@@ -511,7 +509,7 @@ const addComponentTree = (
   margin_left = 0
 ) => {
   const button = document.createElement("button");
-  button.style.marginLeft = margin_left + "%";
+  button.style.marginLeft = `${margin_left}%`;
   button.textContent = root.index;
   componentTree.appendChild(button);
   componentTree.appendChild(document.createElement("br"));
