@@ -20,6 +20,7 @@ import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
 import { isPowerOfTwo } from "./Utils/power";
+import deepCopyNode from "./Utils/deep-copy";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -224,6 +225,7 @@ const secondaryRenderer = new Renderer(
 );
 
 /* Get HTML Element */
+/* Main Canvas Control */
 const sliderTranslateX = document.getElementById(
   "slider-translate-x"
 ) as HTMLInputElement;
@@ -280,6 +282,63 @@ const sliderCamRadius = document.getElementById(
 ) as HTMLInputElement;
 const labelCamRadius = document.getElementById("label-cam-radius");
 
+/* Secondary Canvas Control */
+/* Get HTML Element */
+const sliderTranslateShapeX = document.getElementById(
+  "slider-translate-shape-x"
+) as HTMLInputElement;
+const labelTranslateShapeX = document.getElementById("label-translate-shape-x");
+
+const sliderTranslateShapeY = document.getElementById(
+  "slider-translate-shape-y"
+) as HTMLInputElement;
+const labelTranslateShapeY = document.getElementById("label-translate-shape-y");
+
+const sliderTranslateShapeZ = document.getElementById(
+  "slider-translate-shape-z"
+) as HTMLInputElement;
+const labelTranslateShapeZ = document.getElementById("label-translate-shape-z");
+
+const sliderAngleShapeX = document.getElementById(
+  "slider-angle-shape-x"
+) as HTMLInputElement;
+const labelAngleShapeX = document.getElementById("label-angle-shape-x");
+
+const sliderAngleShapeY = document.getElementById(
+  "slider-angle-shape-y"
+) as HTMLInputElement;
+const labelAngleShapeY = document.getElementById("label-angle-shape-y");
+
+const sliderAngleShapeZ = document.getElementById(
+  "slider-angle-shape-z"
+) as HTMLInputElement;
+const labelAngleShapeZ = document.getElementById("label-angle-shape-z");
+
+const sliderScaleShapeX = document.getElementById(
+  "slider-scale-shape-x"
+) as HTMLInputElement;
+const labelScaleShapeX = document.getElementById("label-scale-shape-x");
+
+const sliderScaleShapeY = document.getElementById(
+  "slider-scale-shape-y"
+) as HTMLInputElement;
+const labelScaleShapeY = document.getElementById("label-scale-shape-y");
+
+const sliderScaleShapeZ = document.getElementById(
+  "slider-scale-shape-z"
+) as HTMLInputElement;
+const labelScaleShapeZ = document.getElementById("label-scale-shape-z");
+
+const sliderCamAngleShape = document.getElementById(
+  "slider-cam-angle-shape"
+) as HTMLInputElement;
+const labelCamAngleShape = document.getElementById("label-cam-angle-shape");
+
+const sliderCamRadiusShape = document.getElementById(
+  "slider-cam-radius-shape"
+) as HTMLInputElement;
+const labelCamRadiusShape = document.getElementById("label-cam-radius-shape");
+
 const listOfProjection = document.getElementById(
   "list-of-projection"
 ) as HTMLSelectElement;
@@ -303,6 +362,7 @@ let articulated: Articulated;
 let selectedNode: Node;
 
 let camera: Camera;
+let cameraShape : Camera;
 let ambientColor: Color;
 let directionalLight: Light;
 
@@ -320,6 +380,22 @@ let offsetTranslate = {
     y: 0,
   },
 };
+
+let offsetTranslateSecondaryCanvas = {
+  orthographic: {
+    x: secondaryCanvas.width / 2,
+    y: secondaryCanvas.height / 3,
+  },
+  perspective: {
+    x: 0,
+    y: 0,
+  },
+  oblique: {
+    x: secondaryCanvas.width / 1.5,
+    y: 0,
+  },
+};
+
 let projectionType: ProjectionType = "orthographic";
 let projectionParams: ProjectionParams = {
   orthographic: {
@@ -344,6 +420,35 @@ let projectionParams: ProjectionParams = {
     ortho_left: 0,
     ortho_right: (mainGL.canvas as HTMLCanvasElement).clientWidth,
     ortho_bottom: (mainGL.canvas as HTMLCanvasElement).clientHeight,
+    ortho_top: 0,
+    ortho_near: 2000,
+    ortho_far: -2000,
+  },
+};
+
+let projectionParamsSecondary: ProjectionParams = {
+  orthographic: {
+    left: 0,
+    right: (secondaryGL.canvas as HTMLCanvasElement).clientWidth,
+    bottom: (secondaryGL.canvas as HTMLCanvasElement).clientHeight,
+    top: 0,
+    near: 2000,
+    far: -2000,
+  },
+  perspective: {
+    fieldOfView: degToRad(60),
+    aspect:
+      (secondaryGL.canvas as HTMLCanvasElement).clientWidth /
+      (secondaryGL.canvas as HTMLCanvasElement).clientHeight,
+    near: 1,
+    far: 2000,
+  },
+  oblique: {
+    factor: 0.1,
+    angle: degToRad(15),
+    ortho_left: 0,
+    ortho_right: (secondaryGL.canvas as HTMLCanvasElement).clientWidth,
+    ortho_bottom: (secondaryGL.canvas as HTMLCanvasElement).clientHeight,
     ortho_top: 0,
     ortho_near: 2000,
     ortho_far: -2000,
@@ -488,6 +593,7 @@ const loadEnvironment = (gl: WebGLRenderingContext) => {
 };
 
 loadTexture(mainGL, "images/Wooden.jpg");
+loadTexture(secondaryGL, "images/Wooden.jpg");
 
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {
@@ -544,6 +650,22 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
     shaderStatus,
     mappingMode
   );
+  
+  if (selectedNode != null){
+    selectedNode.renderTree(
+      secondaryRenderer,
+      projectionType,
+      projectionParamsSecondary[projectionType],
+      cameraShape,
+      offsetTranslateSecondaryCanvas[projectionType].x,
+      offsetTranslateSecondaryCanvas[projectionType].y,
+      ambientColor,
+      currentLight,
+      shaderStatus,
+      mappingMode,
+      selectedNode.getLocalMatrix()
+    );
+  }
 
   /* Render Recursively */
   window.requestAnimationFrame(renderMainCanvas);
@@ -553,11 +675,13 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
 const initializeDefaultValue = (
   newArticulated: Articulated,
   newCamera: Camera,
+  newCameraShape: Camera,
   newAmbientColor: Color,
   newDirectionalLight: Light
 ) => {
   articulated = newArticulated;
   camera = newCamera;
+  cameraShape = newCameraShape;
   ambientColor = newAmbientColor;
   directionalLight = newDirectionalLight;
 
@@ -600,6 +724,12 @@ const initializeDefaultValue = (
   sliderCamRadius.valueAsNumber = camera.radius;
   labelCamRadius.textContent = camera.radius.toString();
 
+  sliderCamAngleShape.valueAsNumber = radToDeg(cameraShape.angle);
+  labelCamAngleShape.textContent = radToDeg(cameraShape.angle).toString();
+
+  sliderCamRadiusShape.valueAsNumber = cameraShape.radius;
+  labelCamRadiusShape.textContent = cameraShape.radius.toString();
+
   shadingModeButton.textContent = "ON";
   shadingModeButton.classList.add("active");
   shaderStatus = ShaderStatus.ON;
@@ -621,7 +751,7 @@ const addComponentTree = (
   button.addEventListener("click", (event) => {
     const textContent = (event.target as HTMLButtonElement).textContent;
 
-    selectedNode = articulated.findNode(textContent);
+    selectedNode = deepCopyNode(articulated.findNode(textContent));
   });
 
   button.style.marginLeft = `${margin_left}%`;
@@ -698,6 +828,88 @@ sliderScaleZ.addEventListener("input", (event) => {
   articulated.root.scaleZ(delta);
 });
 
+sliderTranslateShapeX.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelTranslateShapeX.textContent = delta.toString();
+  if (selectedNode != null)
+  {
+    selectedNode.moveX(delta);
+  }
+});
+
+sliderTranslateShapeY.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelTranslateShapeY.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.moveY(delta);
+  }
+});
+
+sliderTranslateShapeZ.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelTranslateShapeZ.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.moveZ(delta);
+  }
+});
+
+sliderAngleShapeX.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelAngleShapeX.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.rotateX(degToRad(delta));
+  }
+});
+
+sliderAngleShapeY.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelAngleShapeY.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.rotateY(degToRad(delta));
+  }
+});
+
+sliderAngleShapeZ.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelAngleShapeZ.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.rotateZ(degToRad(delta));
+  }
+});
+
+sliderScaleShapeX.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelScaleShapeX.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.scaleX(delta);
+  }
+});
+
+sliderScaleShapeY.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelScaleShapeY.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.scaleY(delta);
+  }
+});
+
+sliderScaleShapeZ.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelScaleShapeZ.textContent = delta.toString();
+  if (selectedNode != null) {
+    selectedNode.scaleZ(delta);
+  }
+});
+
 listOfProjection.addEventListener("change", () => {
   const newProjectionType = listOfProjection.selectedOptions[0]
     .value as ProjectionType;
@@ -711,10 +923,13 @@ listOfMapping.addEventListener("change", () => {
   mappingMode = newMapping;
   if (mappingMode == "texture") {
     loadTexture(mainGL, "images/Wooden.jpg");
+    loadTexture(secondaryGL, "images/Wooden.jpg");
   } else if (mappingMode == "environment") {
     loadEnvironment(mainGL);
+    loadEnvironment(secondaryGL);
   } else if (mappingMode == "bump") {
     loadTexture(mainGL, "images/Bumped.png");
+    loadTexture(secondaryGL, "images/Bumped.png");
   }
 });
 
@@ -733,10 +948,25 @@ sliderCamRadius.addEventListener("input", (event) => {
   camera.radius = delta;
 });
 
+sliderCamAngleShape.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelCamAngleShape.textContent = delta.toString();
+  cameraShape.rotate(degToRad(delta));
+});
+
+sliderCamRadiusShape.addEventListener("input", (event) => {
+  const delta = (event.target as HTMLInputElement).valueAsNumber;
+
+  labelCamRadiusShape.textContent = delta.toString();
+  cameraShape.radius = delta;
+});
+
 loadButton.addEventListener("click", () => {
   FileHandling.upload((text) => {
     initializeDefaultValue(
       FileSystem.loadArticulated(text),
+      generateDefaultCamera(),
       generateDefaultCamera(),
       generateDefaultAmbientColor(),
       generateDefaultDirectionalLight()
@@ -782,6 +1012,7 @@ resetButton.addEventListener("click", () => {
   initializeDefaultValue(
     generateDefaultArticulated(),
     generateDefaultCamera(),
+    generateDefaultCamera(),
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
   );
@@ -806,6 +1037,7 @@ window.addEventListener("click", (event) => {
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(
     generateDefaultArticulated(),
+    generateDefaultCamera(),
     generateDefaultCamera(),
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
