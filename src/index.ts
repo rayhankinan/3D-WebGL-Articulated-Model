@@ -4,6 +4,7 @@ import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
 import Renderer from "Utils/renderer";
 import Articulated from "Objects/articulated";
+import Node from "Objects/node";
 import Camera from "Objects/camera";
 import Light from "Objects/light";
 import Color from "Objects/color";
@@ -18,7 +19,6 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
-import Node from "./Objects/node";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -498,26 +498,29 @@ closeHelpButton.addEventListener("click", () => {
   helpModal.style.display = "none";
 });
 
-window.onclick = function (event) {
-  if (event.target == helpModal) {
+window.onclick = (event) => {
+  if (event.target === helpModal) {
     helpModal.style.display = "none";
   }
 };
 
-const addComponentTree = (componentTree :HTMLElement, root: Node, margin_left = 0) => {
+/* Component Tree */
+const addComponentTree = (
+  componentTree: HTMLElement,
+  root: Node,
+  margin_left = 0
+) => {
   const button = document.createElement("button");
   button.style.marginLeft = margin_left + "%";
   button.textContent = root.index;
   componentTree.appendChild(button);
   componentTree.appendChild(document.createElement("br"));
-  
+
   const children = root.children;
-  if (children.length > 0) {
-    for (const child of children) {
-      addComponentTree(componentTree, child, margin_left + 5);
-    } 
+  for (const child of children) {
+    addComponentTree(componentTree, child, margin_left + 5);
   }
-}
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(
