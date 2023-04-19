@@ -31,36 +31,36 @@ const fragmentShaderSource = fragmentShaderElement.textContent;
 const mainCanvas = document.getElementById("main-canvas") as HTMLCanvasElement;
 const mainGL = mainCanvas.getContext("webgl");
 
-/* Setup Viewport */
+/* Setup Main Canvas Viewport */
 resizeCanvasToDisplaySize(mainGL.canvas as HTMLCanvasElement);
 mainGL.viewport(0, 0, mainGL.canvas.width, mainGL.canvas.height);
 
-/* Clear Color and Buffer */
+/* Clear Main Canvas Color and Buffer */
 mainGL.clear(mainGL.COLOR_BUFFER_BIT | mainGL.DEPTH_BUFFER_BIT);
 
-/* Turn On Culling */
+/* Turn On Main Canvas Culling */
 mainGL.enable(mainGL.CULL_FACE);
 
-/* Enable the Depth Buffer */
+/* Enable the Depth Buffer in Main Canvas */
 mainGL.enable(mainGL.DEPTH_TEST);
 
-/* Add Vertex and Fragment Shader */
-const vertexShader = createShader(
+/* Add Vertex and Fragment Shader in Main Canvas */
+const mainVertexShader = createShader(
   mainGL,
   mainGL.VERTEX_SHADER,
   vertexShaderSource
 );
-const fragmentShader = createShader(
+const mainFragmentShader = createShader(
   mainGL,
   mainGL.FRAGMENT_SHADER,
   fragmentShaderSource
 );
 
-/* Setup Program */
-const mainProgram = createProgram(mainGL, vertexShader, fragmentShader);
+/* Setup Main Program */
+const mainProgram = createProgram(mainGL, mainVertexShader, mainFragmentShader);
 
-/* Setup Program Info */
-const programInfo: ProgramInfo = {
+/* Setup Main Program Info */
+const mainProgramInfo: ProgramInfo = {
   attribLocations: {
     positionLocation: mainGL.getAttribLocation(mainProgram, "a_position"),
     colorLocation: mainGL.getAttribLocation(mainProgram, "a_color"),
@@ -87,18 +87,109 @@ const programInfo: ProgramInfo = {
   },
 };
 
-/* Setup Buffer */
-const programBuffer: ProgramBuffer = {
+/* Setup Main Program Buffer */
+const mainProgramBuffer: ProgramBuffer = {
   positionBuffer: mainGL.createBuffer(),
   colorBuffer: mainGL.createBuffer(),
   normalBuffer: mainGL.createBuffer(),
 };
 
-/* Setup Renderer */
-const renderer = new Renderer(mainGL, mainProgram, programInfo, programBuffer);
+/* Setup Main Renderer */
+const mainRenderer = new Renderer(
+  mainGL,
+  mainProgram,
+  mainProgramInfo,
+  mainProgramBuffer
+);
+
+/* Secondary Canvas */
+const secondaryCanvas = document.getElementById(
+  "secondary-canvas"
+) as HTMLCanvasElement;
+const secondaryGL = secondaryCanvas.getContext("webgl");
+
+/* Setup Secondary Canvas Viewport */
+resizeCanvasToDisplaySize(secondaryGL.canvas as HTMLCanvasElement);
+secondaryGL.viewport(0, 0, secondaryGL.canvas.width, secondaryGL.canvas.height);
+
+/* Clear Secondary Canvas Color and Buffer */
+secondaryGL.clear(secondaryGL.COLOR_BUFFER_BIT | secondaryGL.DEPTH_BUFFER_BIT);
+
+/* Turn On Secondary Canvas Culling */
+secondaryGL.enable(secondaryGL.CULL_FACE);
+
+/* Enable the Depth Buffer in Secondary Canvas */
+secondaryGL.enable(secondaryGL.DEPTH_TEST);
+
+/* Add Vertex and Fragment Shader in Secondary Canvas */
+const secondaryVertexShader = createShader(
+  secondaryGL,
+  secondaryGL.VERTEX_SHADER,
+  vertexShaderSource
+);
+const secondaryFragmentShader = createShader(
+  secondaryGL,
+  secondaryGL.FRAGMENT_SHADER,
+  fragmentShaderSource
+);
+
+/* Setup Secondary Program */
+const secondaryProgram = createProgram(
+  secondaryGL,
+  secondaryVertexShader,
+  secondaryFragmentShader
+);
+
+/* Setup Secondary Program Info */
+const secondaryProgramInfo: ProgramInfo = {
+  attribLocations: {
+    positionLocation: secondaryGL.getAttribLocation(
+      secondaryProgram,
+      "a_position"
+    ),
+    colorLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_color"),
+    normalLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_normal"),
+  },
+  uniformLocations: {
+    worldViewProjectionLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_worldViewProjection"
+    ),
+    worldInverseTransposeLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_worldInverseTranspose"
+    ),
+    ambientLightColorLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_ambientLightColor"
+    ),
+    reverseLightDirectionLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_reverseLightDirection"
+    ),
+    shadingLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_shading"
+    ),
+  },
+};
+
+/* Setup Secondary Program Buffer */
+const secondaryProgramBuffer: ProgramBuffer = {
+  positionBuffer: secondaryGL.createBuffer(),
+  colorBuffer: secondaryGL.createBuffer(),
+  normalBuffer: secondaryGL.createBuffer(),
+};
+
+/* Setup Secondary Renderer */
+const secondaryRenderer = new Renderer(
+  secondaryGL,
+  secondaryProgram,
+  secondaryProgramInfo,
+  secondaryProgramBuffer
+);
 
 /* Get HTML Element */
-/* Transformation Elements */
 const sliderTranslateX = document.getElementById(
   "slider-translate-x"
 ) as HTMLInputElement;
@@ -171,10 +262,12 @@ const componentTree = document.getElementById("component-tree");
 
 /* Global Variables */
 let articulated: Articulated;
-let currentRawArticulated: string;
+let selectedNode: Node;
+
 let camera: Camera;
 let ambientColor: Color;
 let directionalLight: Light;
+
 let offsetTranslate = {
   orthographic: {
     x: mainCanvas.width / 2,
@@ -225,8 +318,8 @@ let then: DOMHighResTimeStamp = 0;
 /* Global Constant */
 const animationSpeed = 1.2;
 
-/* Render Canvas */
-const renderCanvas = (now: DOMHighResTimeStamp) => {
+/* Render Main Canvas */
+const renderMainCanvas = (now: DOMHighResTimeStamp) => {
   /* Convent to Second */
   now *= 0.001;
 
@@ -267,9 +360,9 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
       ? directionalLight.reverse()
       : directionalLight;
 
-  /* Render Object */
+  /* Render Articulated */
   articulated.renderTree(
-    renderer,
+    mainRenderer,
     projectionType,
     projectionParams[projectionType],
     camera,
@@ -281,7 +374,7 @@ const renderCanvas = (now: DOMHighResTimeStamp) => {
   );
 
   /* Render Recursively */
-  window.requestAnimationFrame(renderCanvas);
+  window.requestAnimationFrame(renderMainCanvas);
 };
 
 /* Initialize Default Value */
@@ -344,8 +437,32 @@ const initializeDefaultValue = (
   animation = true;
 };
 
+/* Component Tree */
+const addComponentTree = (
+  componentTree: HTMLElement,
+  root: Node,
+  margin_left = 0
+) => {
+  const button = document.createElement("button");
+
+  button.textContent = root.index;
+  button.addEventListener("click", (event) => {
+    const textContent = (event.target as HTMLButtonElement).textContent;
+
+    selectedNode = articulated.findNode(textContent);
+  });
+
+  button.style.marginLeft = `${margin_left}%`;
+
+  componentTree.appendChild(button);
+  componentTree.appendChild(document.createElement("br"));
+
+  for (const child of root.children) {
+    addComponentTree(componentTree, child, margin_left + 5);
+  }
+};
+
 /* Event Listener */
-/* Transformation Listener */
 sliderTranslateX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
@@ -433,10 +550,8 @@ sliderCamRadius.addEventListener("input", (event) => {
 
 loadButton.addEventListener("click", () => {
   FileHandling.upload((text) => {
-    currentRawArticulated = text;
-
     initializeDefaultValue(
-      FileSystem.loadArticulated(currentRawArticulated),
+      FileSystem.loadArticulated(text),
       generateDefaultCamera(),
       generateDefaultAmbientColor(),
       generateDefaultDirectionalLight()
@@ -496,30 +611,13 @@ closeHelpButton.addEventListener("click", () => {
   helpModal.style.display = "none";
 });
 
-window.onclick = (event) => {
+window.addEventListener("click", (event) => {
   if (event.target === helpModal) {
     helpModal.style.display = "none";
   }
-};
+});
 
-/* Component Tree */
-const addComponentTree = (
-  componentTree: HTMLElement,
-  root: Node,
-  margin_left = 0
-) => {
-  const button = document.createElement("button");
-  button.style.marginLeft = `${margin_left}%`;
-  button.textContent = root.index;
-  componentTree.appendChild(button);
-  componentTree.appendChild(document.createElement("br"));
-
-  const children = root.children;
-  for (const child of children) {
-    addComponentTree(componentTree, child, margin_left + 5);
-  }
-};
-
+/* Main */
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(
     generateDefaultArticulated(),
@@ -529,5 +627,5 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   addComponentTree(componentTree, articulated.root);
-  window.requestAnimationFrame(renderCanvas);
+  window.requestAnimationFrame(renderMainCanvas);
 });
