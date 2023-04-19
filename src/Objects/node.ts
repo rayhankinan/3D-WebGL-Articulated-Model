@@ -50,16 +50,6 @@ class Node extends Shape implements NodeInterface {
     }
   }
 
-  public applyTransformation(): Node {
-    const matrix = this.getLocalMatrix();
-    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
-
-    const index = this.index.slice();
-    const children = this.children.map((c) => c.applyTransformation());
-
-    return new Node(index, children, arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
-  }
-
   public renderNode<T extends ProjectionType>(
     renderer: Renderer,
     projectionType: T,
@@ -230,6 +220,52 @@ class Node extends Shape implements NodeInterface {
         childrenWorldMatrix
       );
     }
+  }
+
+  public applyTransformationNode(currentWorldMatrix: Matrix): Node {
+    /* Get Matrix */
+    const localMatrix = this.getLocalMatrix();
+
+    /* Multiplied with World Matrix */
+    const matrix = currentWorldMatrix.multiplyMatrix(localMatrix);
+
+    /* Count Array of Face */
+    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
+
+    /* Get Index */
+    const index = this.index.slice();
+
+    return new Node(index, [], arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
+  }
+
+  public applyTransformationTree(currentWorldMatrix: Matrix): Node {
+    /* Get Transformed Node */
+    const transformedNode = this.applyTransformationNode(currentWorldMatrix);
+
+    /* Change World Matrix for Children */
+    const childrenWorldMatrix = currentWorldMatrix.multiplyMatrix(
+      this.getLocalMatrix()
+    );
+
+    /* Apply It To Children */
+    const children = this.children.map((c) =>
+      c.applyTransformationTree(childrenWorldMatrix)
+    );
+
+    return new Node(
+      transformedNode.index,
+      children,
+      transformedNode.arrayOfFace,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    );
   }
 }
 

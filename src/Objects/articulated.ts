@@ -16,8 +16,10 @@ class Articulated implements ArticulatedInterface {
     return this.root.findNode(index);
   }
 
-  public applyTransformation(): Articulated {
-    return new Articulated(this.root.applyTransformation());
+  public applyTransformationTree(): Articulated {
+    return new Articulated(
+      this.root.applyTransformationTree(Transformation.identity())
+    );
   }
 
   public renderTree<T extends ProjectionType>(
