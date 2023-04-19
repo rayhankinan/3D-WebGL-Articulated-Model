@@ -487,7 +487,7 @@ const loadEnvironment = (gl: WebGLRenderingContext) => {
   );
 };
 
-loadTexture(mainGL, "images/f-texture.png");
+loadTexture(mainGL, "images/Wooden.jpg");
 
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {
@@ -710,7 +710,7 @@ listOfMapping.addEventListener("change", () => {
 
   mappingMode = newMapping;
   if (mappingMode == "texture") {
-    loadTexture(mainGL, "images/f-texture.png");
+    loadTexture(mainGL, "images/Wooden.jpg");
   } else if (mappingMode == "environment") {
     loadEnvironment(mainGL);
   } else if (mappingMode == "bump") {
