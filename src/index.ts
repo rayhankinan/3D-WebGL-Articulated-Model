@@ -18,6 +18,7 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
+import Node from "./Objects/node";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -167,6 +168,8 @@ const resetButton = document.getElementById("reset-btn");
 const helpButton = document.getElementById("help-btn");
 const helpModal = document.getElementById("help-panel");
 const closeHelpButton = document.getElementById("close-help-btn");
+
+const componentTree = document.getElementById("component-tree");
 
 /* Global Variables */
 let articulated: Articulated;
@@ -501,6 +504,23 @@ window.onclick = function (event) {
   }
 };
 
+const addComponentTree = (componentTree :HTMLElement, root: Node, margin_left = 0) => {
+  const children = root.children;
+  console.log(children.length)
+  
+  for (const child of children) {
+    const button = document.createElement("button");
+    button.style.marginLeft = margin_left + "%";
+    button.textContent = child.index;
+    componentTree.appendChild(button);
+    componentTree.appendChild(document.createElement("br"));
+
+    if (child.children.length > 0) {
+      addComponentTree(componentTree, child, margin_left + 5);
+    }
+  } 
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeDefaultValue(
     generateDefaultArticulated(),
@@ -509,5 +529,6 @@ document.addEventListener("DOMContentLoaded", () => {
     generateDefaultDirectionalLight()
   );
 
+  addComponentTree(componentTree, articulated.root);
   window.requestAnimationFrame(renderCanvas);
 });
