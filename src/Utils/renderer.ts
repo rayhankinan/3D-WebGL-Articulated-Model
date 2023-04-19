@@ -16,21 +16,28 @@ class Renderer {
 
     /* Unpack Program Info */
     const { attribLocations, uniformLocations } = this.programInfo;
-    const { positionLocation, colorLocation, normalLocation } = attribLocations;
+    const {
+      positionLocation,
+      colorLocation,
+      normalLocation,
+      texcoordLocation,
+    } = attribLocations;
     const {
       worldViewProjectionLocation,
       worldInverseTransposeLocation,
       ambientLightColorLocation,
       reverseLightDirectionLocation,
       shadingLocation,
+      textureLocation,
     } = uniformLocations;
 
     /* Unpack Program Buffer */
-    const { positionBuffer, colorBuffer, normalBuffer } = this.programBuffer;
+    const { positionBuffer, colorBuffer, normalBuffer, textureBuffer } =
+      this.programBuffer;
 
     /* Unpack Program Parameter */
     const { attributes, uniforms } = programParam;
-    const { rawPosition, rawColor, rawNormal } = attributes;
+    const { rawPosition, rawColor, rawNormal, rawTexture } = attributes;
     const {
       rawMatrix,
       rawInverseTransposeMatrix,
@@ -96,6 +103,25 @@ class Renderer {
       normalOffset
     );
 
+    /* Setup Texture Attribute */
+    this.gl.enableVertexAttribArray(texcoordLocation);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, textureBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, rawTexture, this.gl.STATIC_DRAW);
+
+    const textureSize = 2;
+    const textureType = this.gl.FLOAT;
+    const textureNormalized = false;
+    const textureStride = 0;
+    const textureOffset = 0;
+    this.gl.vertexAttribPointer(
+      texcoordLocation,
+      textureSize,
+      textureType,
+      textureNormalized,
+      textureStride,
+      textureOffset
+    );
+
     /* Set World View Projection Uniform */
     this.gl.uniformMatrix4fv(worldViewProjectionLocation, false, rawMatrix);
 
@@ -114,6 +140,9 @@ class Renderer {
 
     /* Set Shader Status Uniform */
     this.gl.uniform1i(shadingLocation, shaderStatus);
+
+    /* Set Texture Uniform */
+    this.gl.uniform1i(textureLocation, 0);
 
     /* Draw Shape */
     const primitiveType = this.gl.TRIANGLES;

@@ -19,6 +19,7 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
+import { isPowerOfTwo } from "./Utils/power";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -65,6 +66,7 @@ const mainProgramInfo: ProgramInfo = {
     positionLocation: mainGL.getAttribLocation(mainProgram, "a_position"),
     colorLocation: mainGL.getAttribLocation(mainProgram, "a_color"),
     normalLocation: mainGL.getAttribLocation(mainProgram, "a_normal"),
+    texcoordLocation: mainGL.getAttribLocation(mainProgram, "a_texcoord"),
   },
   uniformLocations: {
     worldViewProjectionLocation: mainGL.getUniformLocation(
@@ -84,6 +86,7 @@ const mainProgramInfo: ProgramInfo = {
       "u_reverseLightDirection"
     ),
     shadingLocation: mainGL.getUniformLocation(mainProgram, "u_shading"),
+    textureLocation: mainGL.getUniformLocation(mainProgram, "u_texture"),
   },
 };
 
@@ -92,6 +95,7 @@ const mainProgramBuffer: ProgramBuffer = {
   positionBuffer: mainGL.createBuffer(),
   colorBuffer: mainGL.createBuffer(),
   normalBuffer: mainGL.createBuffer(),
+  textureBuffer: mainGL.createBuffer(),
 };
 
 /* Setup Main Renderer */
@@ -149,6 +153,7 @@ const secondaryProgramInfo: ProgramInfo = {
     ),
     colorLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_color"),
     normalLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_normal"),
+    texcoordLocation: mainGL.getAttribLocation(mainProgram, "a_texcoord"),
   },
   uniformLocations: {
     worldViewProjectionLocation: secondaryGL.getUniformLocation(
@@ -171,6 +176,7 @@ const secondaryProgramInfo: ProgramInfo = {
       secondaryProgram,
       "u_shading"
     ),
+    textureLocation: mainGL.getUniformLocation(mainProgram, "u_texture"),
   },
 };
 
@@ -179,6 +185,7 @@ const secondaryProgramBuffer: ProgramBuffer = {
   positionBuffer: secondaryGL.createBuffer(),
   colorBuffer: secondaryGL.createBuffer(),
   normalBuffer: secondaryGL.createBuffer(),
+  textureBuffer: secondaryGL.createBuffer(),
 };
 
 /* Setup Secondary Renderer */
@@ -317,6 +324,137 @@ let then: DOMHighResTimeStamp = 0;
 
 /* Global Constant */
 const animationSpeed = 1.2;
+
+/* Loading texture or bump */
+const loadTexture = (gl: WebGLRenderingContext, url: string) => {
+  /* Create a texture */
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  const texImageLevel = 0;
+  const texImageInternalFormat = gl.RGBA;
+  const texImageWidth = 1;
+  const texImageHeight = 1;
+  const texImageBorder = 0;
+  const texImageFormat = gl.RGBA;
+  const texImageType = gl.UNSIGNED_BYTE;
+
+  // Load texture with opaque blue while waiting for the image to load
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    texImageLevel,
+    texImageInternalFormat,
+    texImageWidth,
+    texImageHeight,
+    texImageBorder,
+    texImageFormat,
+    texImageType,
+    new Uint8Array([0, 0, 255, 255])
+  );
+
+  const image = new Image();
+  image.onload = () => {
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      texImageLevel,
+      texImageInternalFormat,
+      texImageFormat,
+      texImageType,
+      image
+    );
+
+    // WebGL has a kind of severe restriction on textures that are not a power of 2 in both dimensions.
+    if (isPowerOfTwo(image.width) && isPowerOfTwo(image.height)) {
+      gl.generateMipmap(gl.TEXTURE_2D);
+    } else {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
+  };
+  image.src = url;
+};
+
+/* Load environment */
+const loadEnvironment = (gl: WebGLRenderingContext) => {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+  const faceInfos = [
+    {
+      target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+      url: "images/pos-x.jpg",
+    },
+    {
+      target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+      url: "images/neg-x.jpg",
+    },
+    {
+      target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+      url: "images/pos-y.jpg",
+    },
+    {
+      target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      url: "images/neg-y.jpg",
+    },
+    {
+      target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+      url: "images/pos-z.jpg",
+    },
+    {
+      target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+      url: "images/neg-z.jpg",
+    },
+  ];
+
+  faceInfos.forEach((faceInfo) => {
+    const { target, url } = faceInfo;
+
+    const texImageLevel = 0;
+    const texImageInternalFormat = gl.RGBA;
+    const texImageWidth = 512;
+    const texImageHeight = 512;
+    const texImageBorder = 0;
+    const texImageFormat = gl.RGBA;
+    const texImageType = gl.UNSIGNED_BYTE;
+
+    gl.texImage2D(
+      target,
+      texImageLevel,
+      texImageInternalFormat,
+      texImageWidth,
+      texImageHeight,
+      texImageBorder,
+      texImageFormat,
+      texImageType,
+      null
+    );
+
+    const image = new Image();
+    image.onload = () => {
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+      gl.texImage2D(
+        target,
+        texImageLevel,
+        texImageInternalFormat,
+        texImageFormat,
+        texImageType,
+        image
+      );
+      gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    };
+    image.src = url;
+  });
+  gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+  gl.texParameteri(
+    gl.TEXTURE_CUBE_MAP,
+    gl.TEXTURE_MIN_FILTER,
+    gl.LINEAR_MIPMAP_LINEAR
+  );
+};
+
+loadTexture(mainGL, "images/Bumped.png");
 
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {

@@ -3,6 +3,7 @@ type ProgramInfo = {
     positionLocation: number;
     colorLocation: number;
     normalLocation: number;
+    texcoordLocation: number;
   };
   uniformLocations: {
     worldViewProjectionLocation: WebGLUniformLocation;
@@ -10,6 +11,7 @@ type ProgramInfo = {
     ambientLightColorLocation: WebGLUniformLocation;
     reverseLightDirectionLocation: WebGLUniformLocation;
     shadingLocation: WebGLUniformLocation;
+    textureLocation: WebGLUniformLocation;
   };
 };
 

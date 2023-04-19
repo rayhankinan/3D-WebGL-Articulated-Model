@@ -101,6 +101,25 @@ class Shape implements ShapeInterface {
     return new Float32Array(normalArray);
   }
 
+  public getRawTexture(): Float32Array {
+    const textureArray = [
+      // Front
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      // Back
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      // Top
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      // Bottom
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      // Right
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      // Left
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+    ];
+
+    return new Float32Array(textureArray);
+  }
+
   public countVertex(): number {
     return this.arrayOfFace.flatMap((f) => f.arrayOfPoint).length;
   }

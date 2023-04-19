@@ -10,12 +10,14 @@
       attribute vec4 a_position;
       attribute vec4 a_color;
       attribute vec3 a_normal;
+      attribute vec2 a_texcoord;
 
       uniform mat4 u_worldViewProjection;
       uniform mat4 u_worldInverseTranspose;
 
       varying vec4 v_color;
       varying vec3 v_normal;
+      varying vec2 v_texcoord;
 
       void main() {
         // Multiply the position by the matrix
@@ -26,6 +28,9 @@
 
         // Orient the normals and pass to the fragment shader
         v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
+
+        // Pass the texcoord to the fragment shader
+        v_texcoord = a_texcoord;
       }
     </script>
     <script type="x-shader/x-fragment" id="fragment-shader">
@@ -34,14 +39,18 @@
       // Passed in from the vertex shader
       varying vec4 v_color;
       varying vec3 v_normal;
+      varying vec2 v_texcoord;
 
       uniform vec3 u_ambientLightColor;
       uniform vec3 u_reverseLightDirection;
 
       uniform bool u_shading;
 
+      // The texture
+      uniform sampler2D u_texture;
+
       void main() {
-        gl_FragColor = v_color;
+        gl_FragColor = texture2D(u_texture, v_texcoord);
 
         if (u_shading) {
           // Because v_normal is a varying it's interpolated so it will not be a unit vector
