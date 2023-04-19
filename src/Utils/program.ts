@@ -14,7 +14,7 @@ function createProgram(
     gl.deleteProgram(program);
 
     throw new Error(
-      `Could not initialize shaders: ${gl.getProgramInfoLog(this.program)}`
+      `Could not initialize shaders: ${gl.getProgramInfoLog(program)}`
     );
   }
 

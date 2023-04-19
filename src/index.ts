@@ -87,6 +87,15 @@ const mainProgramInfo: ProgramInfo = {
     ),
     shadingLocation: mainGL.getUniformLocation(mainProgram, "u_shading"),
     textureLocation: mainGL.getUniformLocation(mainProgram, "u_texture"),
+    textureEnvLocation: mainGL.getUniformLocation(mainProgram, "u_texture_env"),
+    textureModeLocation1: mainGL.getUniformLocation(
+      mainProgram,
+      "u_texture_mode_1"
+    ),
+    textureModeLocation2: mainGL.getUniformLocation(
+      mainProgram,
+      "u_texture_mode_2"
+    ),
   },
 };
 
@@ -153,7 +162,10 @@ const secondaryProgramInfo: ProgramInfo = {
     ),
     colorLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_color"),
     normalLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_normal"),
-    texcoordLocation: mainGL.getAttribLocation(mainProgram, "a_texcoord"),
+    texcoordLocation: secondaryGL.getAttribLocation(
+      secondaryProgram,
+      "a_texcoord"
+    ),
   },
   uniformLocations: {
     worldViewProjectionLocation: secondaryGL.getUniformLocation(
@@ -176,7 +188,22 @@ const secondaryProgramInfo: ProgramInfo = {
       secondaryProgram,
       "u_shading"
     ),
-    textureLocation: mainGL.getUniformLocation(mainProgram, "u_texture"),
+    textureLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_texture"
+    ),
+    textureEnvLocation: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_texture_env"
+    ),
+    textureModeLocation1: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_texture_mode_1"
+    ),
+    textureModeLocation2: secondaryGL.getUniformLocation(
+      secondaryProgram,
+      "u_texture_mode_2"
+    ),
   },
 };
 
@@ -454,7 +481,8 @@ const loadEnvironment = (gl: WebGLRenderingContext) => {
   );
 };
 
-loadTexture(mainGL, "images/Bumped.png");
+// loadEnvironment(mainGL);
+loadTexture(mainGL, "images/f-texture.png");
 
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {

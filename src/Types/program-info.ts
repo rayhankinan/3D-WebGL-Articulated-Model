@@ -12,6 +12,9 @@ type ProgramInfo = {
     reverseLightDirectionLocation: WebGLUniformLocation;
     shadingLocation: WebGLUniformLocation;
     textureLocation: WebGLUniformLocation;
+    textureEnvLocation: WebGLUniformLocation;
+    textureModeLocation1: WebGLUniformLocation;
+    textureModeLocation2: WebGLUniformLocation;
   };
 };
 

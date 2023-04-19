@@ -29,6 +29,9 @@ class Renderer {
       reverseLightDirectionLocation,
       shadingLocation,
       textureLocation,
+      textureEnvLocation,
+      textureModeLocation1,
+      textureModeLocation2,
     } = uniformLocations;
 
     /* Unpack Program Buffer */
@@ -65,24 +68,24 @@ class Renderer {
       positionOffset
     );
 
-    /* Setup Color Attribute */
-    this.gl.enableVertexAttribArray(colorLocation);
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, rawColor, this.gl.STATIC_DRAW);
+    // /* Setup Color Attribute */
+    // this.gl.enableVertexAttribArray(colorLocation);
+    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
+    // this.gl.bufferData(this.gl.ARRAY_BUFFER, rawColor, this.gl.STATIC_DRAW);
 
-    const colorSize = 3; /* 3 components per iteration */
-    const colorType = this.gl.FLOAT; /* The data is 32 bit float */
-    const colorNormalized = false; /* Normalize the data */
-    const colorStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
-    const colorOffset = 0; /* Start at the beginning of the buffer */
-    this.gl.vertexAttribPointer(
-      colorLocation,
-      colorSize,
-      colorType,
-      colorNormalized,
-      colorStride,
-      colorOffset
-    );
+    // const colorSize = 3; /* 3 components per iteration */
+    // const colorType = this.gl.FLOAT; /* The data is 32 bit float */
+    // const colorNormalized = false; /* Normalize the data */
+    // const colorStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
+    // const colorOffset = 0; /* Start at the beginning of the buffer */
+    // this.gl.vertexAttribPointer(
+    //   colorLocation,
+    //   colorSize,
+    //   colorType,
+    //   colorNormalized,
+    //   colorStride,
+    //   colorOffset
+    // );
 
     /* Setup Normal Attribute */
     this.gl.enableVertexAttribArray(normalLocation);
@@ -143,6 +146,11 @@ class Renderer {
 
     /* Set Texture Uniform */
     this.gl.uniform1i(textureLocation, 0);
+    this.gl.uniform1i(textureEnvLocation, 1);
+
+    /* Set Texture Mode Uniform */
+    this.gl.uniform1i(textureModeLocation1, 0);
+    this.gl.uniform1i(textureModeLocation2, 0);
 
     /* Draw Shape */
     const primitiveType = this.gl.TRIANGLES;
