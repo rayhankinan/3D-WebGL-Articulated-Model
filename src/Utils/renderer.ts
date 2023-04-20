@@ -268,7 +268,7 @@ class Renderer {
         this.gl.uniform1i(textureEnvLocation, 1);
 
         /* Set Texture Mode Uniform */
-        this.gl.uniform1i(textureModeLocation, 0);
+        this.gl.uniform1i(textureModeLocation, 2);
         break;
     }
 
