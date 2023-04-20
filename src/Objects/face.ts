@@ -21,7 +21,7 @@ class Face implements FaceInterface {
     return qs.cross(qr).normalize();
   }
 
-  public findTangents(): Vector[] {
+  public findTangents(): [Vector, Vector] {
     const firstPoint = this.arrayOfDraw[0].getPoint();
     const q = new Vector(firstPoint.x, firstPoint.y, firstPoint.z);
 
