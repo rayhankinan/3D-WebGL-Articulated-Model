@@ -93,7 +93,7 @@ class Shape implements ShapeInterface {
   public getRawTexture(): Float32Array {
     const textureArray = this.arrayOfFace.flatMap((f) =>
       Array<readonly [number, number]>(f.arrayOfPoint.length)
-        .fill([0, 0])
+        .fill([0, 0]) // TODO: UBAH INI
         .flat()
     );
 
