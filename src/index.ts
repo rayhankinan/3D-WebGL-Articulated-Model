@@ -3,7 +3,6 @@ import createProgram from "Utils/program";
 import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
 import Renderer from "Utils/renderer";
-import deepCopyNode from "Utils/deep-copy";
 import Articulated from "Objects/articulated";
 import Node from "Objects/node";
 import Camera from "Objects/camera";
@@ -453,65 +452,67 @@ const animationSpeed = 1.2;
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {
   /* Convent to Second */
-  now *= 0.001;
+  now *= 0.005;
 
   /* Animate */
   if (animation) {
     const c = animationSpeed * now;
 
-    /* Point Between Feet */
-    articulated
-      .findNode("point-between-feet")
-      .moveY(-50 * Math.abs(Math.sin(c)));
+    articulated.applyAnimation(c);
 
-    /* Left Leg */
-    articulated.findNode("left-leg").rotateX(Math.sin(c));
+    // /* Point Between Feet */
+    // articulated
+    //   .findNode("point-between-feet")
+    //   .moveY(-50 * Math.abs(Math.sin(c)));
 
-    /* Right Leg */
-    articulated.findNode("right-leg").rotateX(-Math.sin(c));
+    // /* Left Leg */
+    // articulated.findNode("left-leg").rotateX(Math.sin(c));
 
-    /* Left Calf */
-    articulated.findNode("left-calf").rotateX(-Math.sin(c + 0.1) * 0.4);
+    // /* Right Leg */
+    // articulated.findNode("right-leg").rotateX(-Math.sin(c));
 
-    /* Right Calf */
-    articulated.findNode("right-calf").rotateX(Math.sin(c + 0.1) * 0.4);
+    // /* Left Calf */
+    // articulated.findNode("left-calf").rotateX(-Math.sin(c + 0.1) * 0.4);
 
-    /* Left Foot */
-    articulated.findNode("left-foot").rotateX(-Math.sin(c + 0.1) * 0.4);
+    // /* Right Calf */
+    // articulated.findNode("right-calf").rotateX(Math.sin(c + 0.1) * 0.4);
 
-    /* Right Foot */
-    articulated.findNode("right-foot").rotateX(Math.sin(c + 0.1) * 0.4);
+    // /* Left Foot */
+    // articulated.findNode("left-foot").rotateX(-Math.sin(c + 0.1) * 0.4);
 
-    /* Left Arm */
-    articulated.findNode("left-arm").rotateZ(Math.sin(c) * 0.4);
+    // /* Right Foot */
+    // articulated.findNode("right-foot").rotateX(Math.sin(c + 0.1) * 0.4);
 
-    /* Right Arm */
-    articulated.findNode("right-arm").rotateZ(Math.sin(c) * 0.4);
+    // /* Left Arm */
+    // articulated.findNode("left-arm").rotateZ(Math.sin(c) * 0.4);
 
-    /* Left Forearm */
-    articulated.findNode("left-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
+    // /* Right Arm */
+    // articulated.findNode("right-arm").rotateZ(Math.sin(c) * 0.4);
 
-    /* Right Forearm */
-    articulated.findNode("right-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
+    // /* Left Forearm */
+    // articulated.findNode("left-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
 
-    /* Left Hand */
-    articulated.findNode("left-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
+    // /* Right Forearm */
+    // articulated.findNode("right-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
 
-    /* Right Hand */
-    articulated.findNode("right-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
+    // /* Left Hand */
+    // articulated.findNode("left-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
 
-    /* Waist */
-    articulated.findNode("waist").rotateY(Math.sin(c) * 0.4);
+    // /* Right Hand */
+    // articulated.findNode("right-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
 
-    /* Torso */
-    articulated.findNode("torso").rotateY(Math.sin(c) * 0.4);
+    // /* Waist */
+    // articulated.findNode("waist").rotateY(Math.sin(c) * 0.4);
 
-    /* Neck */
-    articulated.findNode("neck").rotateY(Math.sin(c + 0.25) * 0.4);
+    // /* Torso */
+    // articulated.findNode("torso").rotateY(Math.sin(c) * 0.4);
 
-    /* Head */
-    articulated.findNode("head").rotateX(Math.sin(c * 2) * 0.2);
-    articulated.findNode("head").rotateY(Math.sin(c + 0.5) * 0.4);
+    // /* Neck */
+    // articulated.findNode("neck").rotateY(Math.sin(c + 0.25) * 0.4);
+
+    // /* Head */
+    // articulated.findNode("head").rotateX(Math.sin(c * 2) * 0.2);
+    // articulated.findNode("head").rotateY(Math.sin(c + 0.5) * 0.4);
   }
 
   /* Get Current Light */
