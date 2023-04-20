@@ -1,6 +1,4 @@
 import FaceInterface from "Interfaces/face-interface";
-import Matrix from "Objects/matrix";
-import Point from "Objects/point";
 import Vector from "Objects/vector";
 import Draw from "Objects/draw";
 
@@ -29,18 +27,6 @@ class Face implements FaceInterface {
 
   public getRawTexture(): readonly number[] {
     return this.arrayOfDraw.flatMap((draw) => draw.getTexture().getPair());
-  }
-
-  public applyMatrix(matrix: Matrix): Face {
-    return new Face(
-      this.arrayOfDraw.map((draw) => {
-        const [x, y, z, w] = matrix
-          .multiplyCoordinate(draw.getPoint())
-          .getQuadruplet();
-
-        return new Draw(new Point(x / w, y / w, z / w), draw.getTexture());
-      })
-    );
   }
 }
 
