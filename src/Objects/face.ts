@@ -7,6 +7,26 @@ import Draw from "Objects/draw";
 class Face implements FaceInterface {
   constructor(public readonly arrayOfDraw: Draw[]) {}
 
+  public findCenter(): Point {
+    let totalX = 0;
+    let totalY = 0;
+    let totalZ = 0;
+
+    for (const draw of this.arrayOfDraw) {
+      const [pX, pY, pZ] = draw.getPoint().getTriplet();
+
+      totalX += pX;
+      totalY += pY;
+      totalZ += pZ;
+    }
+
+    return new Point(
+      totalX / this.arrayOfDraw.length,
+      totalY / this.arrayOfDraw.length,
+      totalZ / this.arrayOfDraw.length
+    );
+  }
+
   public findNormal(): Vector {
     const firstPoint = this.arrayOfDraw[0].getPoint();
     const q = new Vector(firstPoint.x, firstPoint.y, firstPoint.z);
