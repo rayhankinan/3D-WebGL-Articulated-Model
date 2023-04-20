@@ -593,8 +593,8 @@ const initializeDefaultValue = (
   animationModeButton.classList.add("active");
   animation = true;
 
-  mainRenderer.texture("images/f-texture.png", 1, 1);
-  secondaryRenderer.texture("images/f-texture.png", 1, 1);
+  mainRenderer.texture("images/wood.png", 1, 1);
+  secondaryRenderer.texture("images/wood.png", 1, 1);
 };
 
 /* Component Tree */
@@ -780,8 +780,8 @@ listOfMapping.addEventListener("change", () => {
 
   switch (mappingMode) {
     case MappingMode.TEXTURE:
-      mainRenderer.texture("images/f-texture.png", 1, 1);
-      secondaryRenderer.texture("images/f-texture.png", 1, 1);
+      mainRenderer.texture("images/wood.png", 1, 1);
+      secondaryRenderer.texture("images/wood.png", 1, 1);
       break;
 
     case MappingMode.ENVIRONMENT:
