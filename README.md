@@ -144,4 +144,4 @@ Program ini memiliki beberapa fitur, yaitu: mengubah jenis proyeksi untuk tampil
 
 1. Jalankan perintah `yarn nodemon` untuk menjalankan kompilasi secara _hot reload_
 2. Buka browser dan akses `localhost` untuk melihat hasil kompilasi
-3. Dapat juga diakses menggunakan pranala berikut ini
+3. Dapat juga diakses menggunakan pranala berikut [ini](https://rayhankinan.github.io/3D-WebGL-Articulated-Model/public/)
