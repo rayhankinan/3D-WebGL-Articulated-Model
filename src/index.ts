@@ -646,6 +646,12 @@ const addComponentTree = (
   }
 };
 
+const clearComponentTree = (componentTree : HTMLElement) => {
+  while (componentTree.firstChild) {
+    componentTree.removeChild(componentTree.firstChild);
+  }
+}
+
 /* Event Listener */
 sliderTranslateX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
@@ -920,6 +926,8 @@ loadButton.addEventListener("click", () => {
       generateDefaultAmbientColor(),
       generateDefaultDirectionalLight()
     );
+    clearComponentTree(componentTree);
+    addComponentTree(componentTree, articulated.root);
   });
 });
 
@@ -965,6 +973,8 @@ resetButton.addEventListener("click", () => {
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
   );
+  clearComponentTree(componentTree);
+  addComponentTree(componentTree, articulated.root);
 });
 
 /* Help Button */
@@ -991,7 +1001,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateDefaultAmbientColor(),
     generateDefaultDirectionalLight()
   );
-
+  clearComponentTree(componentTree);
   addComponentTree(componentTree, articulated.root);
   window.requestAnimationFrame(renderMainCanvas);
 });
