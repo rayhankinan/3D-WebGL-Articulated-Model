@@ -82,6 +82,7 @@ html {
 #component-tree {
   border: 3px solid black;
   height: 40vh;
+  overflow: auto;
 }
 
 #right-side {
