@@ -3,7 +3,6 @@ import createProgram from "Utils/program";
 import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
 import Renderer from "Utils/renderer";
-import isPowerOfTwo from "Utils/power";
 import deepCopyNode from "Utils/deep-copy";
 import Articulated from "Objects/articulated";
 import Node from "Objects/node";
@@ -15,6 +14,7 @@ import ProjectionParams from "Types/projection-params";
 import ShaderStatus from "Types/shader-status";
 import ProgramInfo from "Types/program-info";
 import ProgramBuffer from "Types/program-buffer";
+import MappingMode from "Types/mapping-mode";
 import FileHandling from "Files/file-handling";
 import FileSystem from "Files/file-system";
 import generateDefaultCamera from "Main/default-camera";
@@ -447,8 +447,7 @@ let projectionParamsSecondary: ProjectionParams = {
 let shaderStatus: ShaderStatus = ShaderStatus.OFF;
 let animation: boolean = false;
 let then: DOMHighResTimeStamp = 0;
-
-let mappingMode = "texture";
+let mappingMode: MappingMode = MappingMode.TEXTURE;
 
 /* Global Constant */
 const animationSpeed = 1.2;
@@ -778,80 +777,86 @@ listOfProjection.addEventListener("change", () => {
 });
 
 listOfMapping.addEventListener("change", () => {
-  const newMapping = listOfMapping.selectedOptions[0].value;
-
+  const newMapping = listOfMapping.selectedOptions[0].value as MappingMode;
   mappingMode = newMapping;
-  if (mappingMode == "texture") {
-    mainRenderer.texture("images/f-texture.png");
-    secondaryRenderer.texture("images/f-texture.png");
-  } else if (mappingMode == "environment") {
-    mainRenderer.environment([
-      {
-        source: "images/pos-x.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-x.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/pos-y.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-y.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/pos-z.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-z.jpg",
-        width: 512,
-        height: 512,
-      },
-    ]);
-    secondaryRenderer.environment([
-      {
-        source: "images/pos-x.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-x.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/pos-y.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-y.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/pos-z.jpg",
-        width: 512,
-        height: 512,
-      },
-      {
-        source: "images/neg-z.jpg",
-        width: 512,
-        height: 512,
-      },
-    ]);
-  } else if (mappingMode == "bump") {
-    mainRenderer.texture("images/bumped.png");
-    secondaryRenderer.texture("images/bumped.png");
+
+  switch (mappingMode) {
+    case MappingMode.TEXTURE:
+      mainRenderer.texture("images/f-texture.png");
+      secondaryRenderer.texture("images/f-texture.png");
+      break;
+
+    case MappingMode.ENVIRONMENT:
+      mainRenderer.environment([
+        {
+          source: "images/pos-x.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-x.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/pos-y.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-y.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/pos-z.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-z.jpg",
+          width: 512,
+          height: 512,
+        },
+      ]);
+      secondaryRenderer.environment([
+        {
+          source: "images/pos-x.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-x.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/pos-y.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-y.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/pos-z.jpg",
+          width: 512,
+          height: 512,
+        },
+        {
+          source: "images/neg-z.jpg",
+          width: 512,
+          height: 512,
+        },
+      ]);
+      break;
+
+    case MappingMode.BUMP:
+      mainRenderer.texture("images/bumped.png");
+      secondaryRenderer.texture("images/bumped.png");
+      break;
   }
 });
 

@@ -3,6 +3,7 @@ import ProgramInfo from "Types/program-info";
 import ProgramBuffer from "Types/program-buffer";
 import isPowerOfTwo from "Utils/power";
 import EnvironmentInfo from "Types/environment-info";
+import MappingMode from "Types/mapping-mode";
 
 class Renderer {
   constructor(
@@ -245,27 +246,31 @@ class Renderer {
     /* Set Shader Status Uniform */
     this.gl.uniform1i(shadingLocation, shaderStatus);
 
-    if (mappingMode == "texture") {
-      /* Set Texture Uniform */
-      this.gl.uniform1i(textureLocation, 0);
-      this.gl.uniform1i(textureEnvLocation, 1);
+    switch (mappingMode) {
+      case MappingMode.TEXTURE:
+        /* Set Texture Uniform */
+        this.gl.uniform1i(textureLocation, 0);
+        this.gl.uniform1i(textureEnvLocation, 1);
 
-      /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation, 0);
-    } else if (mappingMode == "environment") {
-      /* Set Texture Uniform */
-      this.gl.uniform1i(textureLocation, 1);
-      this.gl.uniform1i(textureEnvLocation, 0);
+        /* Set Texture Mode Uniform */
+        this.gl.uniform1i(textureModeLocation, 0);
+        break;
+      case MappingMode.ENVIRONMENT:
+        /* Set Texture Uniform */
+        this.gl.uniform1i(textureLocation, 1);
+        this.gl.uniform1i(textureEnvLocation, 0);
 
-      /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation, 1);
-    } else if (mappingMode == "bump") {
-      /* Set Texture Uniform */
-      this.gl.uniform1i(textureLocation, 0);
-      this.gl.uniform1i(textureEnvLocation, 1);
+        /* Set Texture Mode Uniform */
+        this.gl.uniform1i(textureModeLocation, 1);
+        break;
+      case MappingMode.BUMP:
+        /* Set Texture Uniform */
+        this.gl.uniform1i(textureLocation, 0);
+        this.gl.uniform1i(textureEnvLocation, 1);
 
-      /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation, 0);
+        /* Set Texture Mode Uniform */
+        this.gl.uniform1i(textureModeLocation, 0);
+        break;
     }
 
     /* Draw Shape */
