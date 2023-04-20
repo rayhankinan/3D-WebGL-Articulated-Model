@@ -3,6 +3,8 @@ import createProgram from "Utils/program";
 import { degToRad, radToDeg } from "Utils/angle";
 import resizeCanvasToDisplaySize from "Utils/resize-canvas";
 import Renderer from "Utils/renderer";
+import isPowerOfTwo from "Utils/power";
+import deepCopyNode from "Utils/deep-copy";
 import Articulated from "Objects/articulated";
 import Node from "Objects/node";
 import Camera from "Objects/camera";
@@ -19,8 +21,6 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
-import { isPowerOfTwo } from "./Utils/power";
-import deepCopyNode from "./Utils/deep-copy";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -362,7 +362,7 @@ let articulated: Articulated;
 let selectedNode: Node;
 
 let camera: Camera;
-let cameraShape : Camera;
+let cameraShape: Camera;
 let ambientColor: Color;
 let directionalLight: Light;
 
@@ -506,8 +506,8 @@ const loadTexture = (gl: WebGLRenderingContext, url: string) => {
     if (isPowerOfTwo(image.width) && isPowerOfTwo(image.height)) {
       gl.generateMipmap(gl.TEXTURE_2D);
     } else {
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     }
   };
@@ -592,9 +592,6 @@ const loadEnvironment = (gl: WebGLRenderingContext) => {
   );
 };
 
-loadTexture(mainGL, "images/Wooden.jpg");
-loadTexture(secondaryGL, "images/Wooden.jpg");
-
 /* Render Main Canvas */
 const renderMainCanvas = (now: DOMHighResTimeStamp) => {
   /* Convent to Second */
@@ -650,8 +647,8 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
     shaderStatus,
     mappingMode
   );
-  
-  if (selectedNode != null){
+
+  if (selectedNode != null) {
     selectedNode.renderTree(
       secondaryRenderer,
       projectionType,
@@ -684,6 +681,9 @@ const initializeDefaultValue = (
   cameraShape = newCameraShape;
   ambientColor = newAmbientColor;
   directionalLight = newDirectionalLight;
+
+  loadTexture(mainGL, "images/f-texture.png");
+  loadTexture(secondaryGL, "images/f-texture.png");
 
   sliderTranslateX.valueAsNumber = articulated.root.tx;
   labelTranslateX.textContent = articulated.root.tx.toString();
@@ -832,8 +832,7 @@ sliderTranslateShapeX.addEventListener("input", (event) => {
   const delta = (event.target as HTMLInputElement).valueAsNumber;
 
   labelTranslateShapeX.textContent = delta.toString();
-  if (selectedNode != null)
-  {
+  if (selectedNode != null) {
     selectedNode.moveX(delta);
   }
 });
@@ -922,8 +921,8 @@ listOfMapping.addEventListener("change", () => {
 
   mappingMode = newMapping;
   if (mappingMode == "texture") {
-    loadTexture(mainGL, "images/Wooden.jpg");
-    loadTexture(secondaryGL, "images/Wooden.jpg");
+    loadTexture(mainGL, "images/f-texture.png");
+    loadTexture(secondaryGL, "images/f-texture.png");
   } else if (mappingMode == "environment") {
     loadEnvironment(mainGL);
     loadEnvironment(secondaryGL);

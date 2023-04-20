@@ -23,8 +23,13 @@
       void main() {
         if (u_texture_mode_1 == 0) {
           gl_Position = u_worldViewProjection * a_position;
+
           // Pass the texcoord to the fragment shader
           v_texcoord = a_texcoord;
+
+          // Orient the normals and pass to the fragment shader
+          v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
+
         } else if (u_texture_mode_1 == 1) {
           // Multiply the position by the matrix
           gl_Position = u_worldViewProjection * a_position;

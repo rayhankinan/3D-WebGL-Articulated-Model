@@ -102,11 +102,11 @@ class Shape implements ShapeInterface {
   }
 
   public getRawTexture(): Float32Array {
-    const textureArray: number[] = [];
-    const arrEl = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
-    for (let i = 0; i < 72; i++) {
-      textureArray.push(...arrEl);
-    }
+    const textureArray = this.arrayOfFace.flatMap((f) =>
+      Array<readonly [number, number]>(f.arrayOfPoint.length)
+        .fill([0, 0])
+        .flat()
+    );
 
     return new Float32Array(textureArray);
   }
