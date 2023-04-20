@@ -1,11 +1,14 @@
 import AnimationInterface from "Interfaces/animation-interface";
 import Animation from "Objects/animation";
+import LambdaFactory from "Factories/lambda-factory";
 
 class AnimationFactory {
   public static fromInterface(animation: AnimationInterface): Animation {
-    const { index, type, func } = animation;
+    const { index, type, lambda } = animation;
 
-    return new Animation(index, type, func);
+    const newLambda = LambdaFactory.fromInterface(lambda);
+
+    return new Animation(index, type, newLambda);
   }
 }
 

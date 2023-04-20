@@ -1,11 +1,12 @@
 import AnimationInterface from "Interfaces/animation-interface";
 import AnimationType from "Types/animation-type";
+import Lambda from "Objects/lambda";
 
 class Animation implements AnimationInterface {
   constructor(
     public index: string,
     public type: AnimationType,
-    public func: (t: number) => number
+    public lambda: Lambda
   ) {}
 
   public getIndex(): string {
@@ -17,7 +18,7 @@ class Animation implements AnimationInterface {
   }
 
   public transform(c: number): number {
-    return this.func(c);
+    return this.lambda.call(c);
   }
 }
 

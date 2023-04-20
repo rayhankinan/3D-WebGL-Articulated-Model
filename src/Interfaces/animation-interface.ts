@@ -1,9 +1,10 @@
 import AnimationType from "Types/animation-type";
+import LambdaInterface from "Interfaces/lambda-interface";
 
 interface AnimationInterface {
   index: string;
   type: AnimationType;
-  func: (c: number) => number;
+  lambda: LambdaInterface;
 }
 
 export default AnimationInterface;
