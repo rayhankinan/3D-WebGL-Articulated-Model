@@ -526,21 +526,20 @@
     <div id="help-panel">
       <div id="help-content">
         <div>
-          <h2>1. Transformasi Translasi</h2>
+          <h2>1. Transformasi Objek Keseluruhan</h2>
+          <p>Akan melakukan transformasi pada objek secara keseluruhan</p>
           <p>
-            <b>Translate X</b>: Melakukan translasi objek pada sumbu X dengan
-            jarak tertentu
+            <b>X</b>: Melakukan translasi objek pada sumbu X dengan jarak
+            tertentu
           </p>
           <p>
-            <b>Translate Y</b>: Melakukan translasi objek pada sumbu Y dengan
-            jarak tertentu
+            <b>Y</b>: Melakukan translasi objek pada sumbu Y dengan jarak
+            tertentu
           </p>
           <p>
-            <b>Translate Z</b>: Melakukan translasi objek pada sumbu Z dengan
-            jarak tertentu
+            <b>Z</b>: Melakukan translasi objek pada sumbu Z dengan jarak
+            tertentu
           </p>
-
-          <h2>2. Transformasi Rotasi</h2>
           <p>
             <b>Angle X</b>: Melakukan rotasi objek pada sumbu X dengan sudut
             tertentu
@@ -553,8 +552,6 @@
             <b>Angle Z</b>: Melakukan rotasi objek pada sumbu Z dengan sudut
             tertentu
           </p>
-
-          <h2>3. Transformasi Dilatasi</h2>
           <p>
             <b>Scale X</b>: Melakukan scaling (memperbesar / memperkecil) objek
             pada sumbu X dengan skala tertentu
@@ -567,16 +564,24 @@
             <b>Scale Z</b>: Melakukan scaling (memperbesar / memperkecil) objek
             pada sumbu Z dengan skala tertentu
           </p>
+
+          <h2>2. Kontrol Kamera</h2>
+          <p>Mengontrol sudut atau radius kamera terhadap objek</p>
         </div>
         <div>
-          <h2>4. Kontrol Kamera</h2>
+          <h2>3. Component Tree</h2>
           <p>
-            <b>Angle</b>: Mengubah sudut kamera terhadap objek dengan sudut
-            tertentu
+            Berisi komponen yang terdapat dalam objek, apabila salah satu
+            ditekan, maka akan muncul pada canvas sebelah kiri
           </p>
-          <p><b>Radius</b>: Mengubah jarak view radius kamera terhadap objek</p>
 
-          <h2>5. Shading Mode</h2>
+          <h2>4. Transformasi Objek Satuan</h2>
+          <p>
+            Akan melakukan transformasi pada objek yang dipilih saja. Semua
+            slider sama seperti transformasi objek keseluruhan
+          </p>
+
+          <h2>5. Enable Shading</h2>
           <p>
             <b>Mode ON</b>: Akan menyalakan shading terhadap objek dengan
             directional lighting
@@ -588,14 +593,12 @@
 
           <h2>6. Enable Animation</h2>
           <p>
-            <b>Mode ON</b>: Akan menyalakan animasi rotasi terhadap sumbu Y dan
-            Z secara otomatis
+            <b>Mode ON</b>: Akan menyalakan animasi objek yang sudah
+            dideklarasikan dalam file
           </p>
-          <p>
-            <b>Mode OFF</b>: Akan menghentikan animasi rotasi di posisi saat itu
-          </p>
+          <p><b>Mode OFF</b>: Akan menghentikan animasi objek</p>
 
-          <h2>7. File</h2>
+          <h2>7. Load dan Save</h2>
           <p>
             <b>Load</b>: Melakukan load file JSON yang berisi data objek model
             3D yang pernah disimpan
