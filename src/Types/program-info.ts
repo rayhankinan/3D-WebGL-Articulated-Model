@@ -3,6 +3,8 @@ type ProgramInfo = {
     positionLocation: number;
     normalLocation: number;
     texcoordLocation: number;
+    tangentLocation: number;
+    bitangentLocation: number;
   };
   uniformLocations: {
     worldViewProjectionLocation: WebGLUniformLocation;

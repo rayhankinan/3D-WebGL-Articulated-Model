@@ -67,6 +67,11 @@ const mainProgramInfo: ProgramInfo = {
     positionLocation: mainGL.getAttribLocation(mainProgram, "a_position"),
     normalLocation: mainGL.getAttribLocation(mainProgram, "a_normal"),
     texcoordLocation: mainGL.getAttribLocation(mainProgram, "a_texcoord"),
+    tangentLocation: mainGL.getAttribLocation(mainProgram, "a_vertextangent"),
+    bitangentLocation: mainGL.getAttribLocation(
+      mainProgram,
+      "a_vertexbitangent"
+    ),
   },
   uniformLocations: {
     worldViewProjectionLocation: mainGL.getUniformLocation(
@@ -100,6 +105,8 @@ const mainProgramBuffer: ProgramBuffer = {
   positionBuffer: mainGL.createBuffer(),
   normalBuffer: mainGL.createBuffer(),
   textureBuffer: mainGL.createBuffer(),
+  tangentBuffer: mainGL.createBuffer(),
+  bitangentBuffer: mainGL.createBuffer(),
 };
 
 /* Setup Main Renderer */
@@ -160,6 +167,14 @@ const secondaryProgramInfo: ProgramInfo = {
       secondaryProgram,
       "a_texcoord"
     ),
+    tangentLocation: secondaryGL.getAttribLocation(
+      secondaryProgram,
+      "a_vertextangent"
+    ),
+    bitangentLocation: secondaryGL.getAttribLocation(
+      secondaryProgram,
+      "a_vertexbitangent"
+    ),
   },
   uniformLocations: {
     worldViewProjectionLocation: secondaryGL.getUniformLocation(
@@ -202,6 +217,8 @@ const secondaryProgramBuffer: ProgramBuffer = {
   positionBuffer: secondaryGL.createBuffer(),
   normalBuffer: secondaryGL.createBuffer(),
   textureBuffer: secondaryGL.createBuffer(),
+  tangentBuffer: secondaryGL.createBuffer(),
+  bitangentBuffer: secondaryGL.createBuffer(),
 };
 
 /* Setup Secondary Renderer */

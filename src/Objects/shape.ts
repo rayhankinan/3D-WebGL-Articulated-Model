@@ -76,6 +76,26 @@ class Shape implements ShapeInterface {
     return new Float32Array(normalArray);
   }
 
+  public getRawTangent(): Float32Array {
+    const tangentArray = this.arrayOfFace.flatMap((f) =>
+      Array<readonly [number, number, number]>(f.arrayOfDraw.length)
+        .fill(f.findTangents()[0].getTriplet())
+        .flat()
+    );
+
+    return new Float32Array(tangentArray);
+  }
+
+  public getRawBitangent(): Float32Array {
+    const bitangentArray = this.arrayOfFace.flatMap((f) =>
+      Array<readonly [number, number, number]>(f.arrayOfDraw.length)
+        .fill(f.findTangents()[1].getTriplet())
+        .flat()
+    );
+
+    return new Float32Array(bitangentArray);
+  }
+
   public countVertex(): number {
     return this.arrayOfFace.flatMap((f) => f.arrayOfDraw).length;
   }

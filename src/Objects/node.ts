@@ -158,6 +158,8 @@ class Node extends Shape implements NodeInterface {
         rawPosition: this.getRawPosition(),
         rawNormal: this.getRawNormal(),
         rawTexture: this.getRawTexture(),
+        rawTangent: this.getRawTangent(),
+        rawBitangent: this.getRawBitangent(),
       },
       uniforms: {
         rawMatrix,

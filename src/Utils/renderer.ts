@@ -142,8 +142,13 @@ class Renderer {
 
     /* Unpack Program Info */
     const { attribLocations, uniformLocations } = this.programInfo;
-    const { positionLocation, normalLocation, texcoordLocation } =
-      attribLocations;
+    const {
+      positionLocation,
+      normalLocation,
+      texcoordLocation,
+      tangentLocation,
+      bitangentLocation,
+    } = attribLocations;
     const {
       worldViewProjectionLocation,
       worldInverseTransposeLocation,
@@ -156,11 +161,18 @@ class Renderer {
     } = uniformLocations;
 
     /* Unpack Program Buffer */
-    const { positionBuffer, normalBuffer, textureBuffer } = this.programBuffer;
+    const {
+      positionBuffer,
+      normalBuffer,
+      textureBuffer,
+      tangentBuffer,
+      bitangentBuffer,
+    } = this.programBuffer;
 
     /* Unpack Program Parameter */
     const { attributes, uniforms } = programParam;
-    const { rawPosition, rawNormal, rawTexture } = attributes;
+    const { rawPosition, rawNormal, rawTexture, rawTangent, rawBitangent } =
+      attributes;
     const {
       rawMatrix,
       rawInverseTransposeMatrix,
@@ -224,6 +236,42 @@ class Renderer {
       textureNormalized,
       textureStride,
       textureOffset
+    );
+
+    /* Setup Tangent Attribute */
+    const tangentSize = 3; /* 3 components per iteration */
+    const tangentType = this.gl.FLOAT; /* The data is 32 bit float */
+    const tangentNormalized = false; /* Don't normalize the data */
+    const tangentStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
+    const tangentOffset = 0; /* Start at the beginning of the buffer */
+    this.gl.enableVertexAttribArray(tangentLocation);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, tangentBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, rawTangent, this.gl.STATIC_DRAW);
+    this.gl.vertexAttribPointer(
+      tangentLocation,
+      tangentSize,
+      tangentType,
+      tangentNormalized,
+      tangentStride,
+      tangentOffset
+    );
+
+    /* Setup Bitangent Attribute */
+    const bitangentSize = 3; /* 3 components per iteration */
+    const bitangentType = this.gl.FLOAT; /* The data is 32 bit float */
+    const bitangentNormalized = false; /* Don't normalize the data */
+    const bitangentStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
+    const bitangentOffset = 0; /* Start at the beginning of the buffer */
+    this.gl.enableVertexAttribArray(bitangentLocation);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, bitangentBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, rawBitangent, this.gl.STATIC_DRAW);
+    this.gl.vertexAttribPointer(
+      bitangentLocation,
+      bitangentSize,
+      bitangentType,
+      bitangentNormalized,
+      bitangentStride,
+      bitangentOffset
     );
 
     /* Set World View Projection Uniform */

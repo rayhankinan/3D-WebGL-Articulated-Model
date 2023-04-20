@@ -5,6 +5,8 @@ type ProgramParam = {
     rawPosition: Float32Array;
     rawNormal: Float32Array;
     rawTexture: Float32Array;
+    rawTangent: Float32Array;
+    rawBitangent: Float32Array;
   };
   uniforms: {
     rawMatrix: readonly number[];
