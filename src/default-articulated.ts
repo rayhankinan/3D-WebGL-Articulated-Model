@@ -1,71 +1,249 @@
 import Articulated from "Objects/articulated";
 import Node from "Objects/node";
-import Face from "Objects/face";
-import Point from "Objects/point";
-import Texture from "Objects/texture";
-import Draw from "Objects/draw";
+import generateDefaultArrayOfFace from "Main/default-array-of-face";
 
 function generateDefaultArticulated(): Articulated {
   return new Articulated(
     new Node(
-      "root",
-      [],
+      "point-between-feet",
       [
-        // Front Face
-        new Face([
-          new Draw(new Point(-25, 25, 25), new Texture(0, 0)),
-          new Draw(new Point(-25, -25, 25), new Texture(1, 0)),
-          new Draw(new Point(25, -25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, 25, 25), new Texture(0, 0)),
-          new Draw(new Point(25, -25, 25), new Texture(1, 1)),
-          new Draw(new Point(25, 25, 25), new Texture(0, 1)),
-        ]),
-        // Back Face
-        new Face([
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(-25, 25, -25), new Texture(1, 0)),
-          new Draw(new Point(25, 25, -25), new Texture(1, 1)),
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, 25, -25), new Texture(1, 1)),
-          new Draw(new Point(25, -25, -25), new Texture(0, 1)),
-        ]),
-        // Top Face
-        new Face([
-          new Draw(new Point(-25, 25, -25), new Texture(0, 0)),
-          new Draw(new Point(-25, 25, 25), new Texture(1, 0)),
-          new Draw(new Point(25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, 25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(25, 25, -25), new Texture(0, 1)),
-        ]),
-        // Bottom face
-        new Face([
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, -25, -25), new Texture(1, 0)),
-          new Draw(new Point(25, -25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, -25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, -25, 25), new Texture(0, 1)),
-        ]),
-        // Right face
-        new Face([
-          new Draw(new Point(25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, 25, -25), new Texture(1, 0)),
-          new Draw(new Point(25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(25, -25, 25), new Texture(0, 1)),
-        ]),
-        // Left face
-        new Face([
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(-25, -25, 25), new Texture(1, 0)),
-          new Draw(new Point(-25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, -25, -25), new Texture(0, 0)),
-          new Draw(new Point(-25, 25, 25), new Texture(1, 1)),
-          new Draw(new Point(-25, 25, -25), new Texture(0, 1)),
-        ]),
+        new Node(
+          "waist",
+          [
+            new Node(
+              "torso",
+              [
+                new Node(
+                  "neck",
+                  [
+                    new Node(
+                      "head",
+                      [],
+                      generateDefaultArrayOfFace(),
+                      0,
+                      -50,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      1,
+                      1
+                    ),
+                  ],
+                  generateDefaultArrayOfFace(),
+                  0,
+                  -50,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  1
+                ),
+                new Node(
+                  "left-arm",
+                  [
+                    new Node(
+                      "left-forearm",
+                      [
+                        new Node(
+                          "left-hand",
+                          [],
+                          generateDefaultArrayOfFace(),
+                          -50,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          1,
+                          1
+                        ),
+                      ],
+                      generateDefaultArrayOfFace(),
+                      -50,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      1,
+                      1
+                    ),
+                  ],
+                  generateDefaultArrayOfFace(),
+                  -50,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  1
+                ),
+                new Node(
+                  "right-arm",
+                  [
+                    new Node(
+                      "right-forearm",
+                      [
+                        new Node(
+                          "right-hand",
+                          [],
+                          generateDefaultArrayOfFace(),
+                          50,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          1,
+                          1
+                        ),
+                      ],
+                      generateDefaultArrayOfFace(),
+                      50,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      1,
+                      1
+                    ),
+                  ],
+                  generateDefaultArrayOfFace(),
+                  50,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  1
+                ),
+              ],
+              generateDefaultArrayOfFace(),
+              0,
+              -100,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ),
+            new Node(
+              "left-leg",
+              [
+                new Node(
+                  "left-calf",
+                  [
+                    new Node(
+                      "left-foot",
+                      [],
+                      generateDefaultArrayOfFace(),
+                      0,
+                      50,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      1,
+                      1
+                    ),
+                  ],
+                  generateDefaultArrayOfFace(),
+                  0,
+                  50,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  1
+                ),
+              ],
+              generateDefaultArrayOfFace(),
+              -50,
+              50,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ),
+            new Node(
+              "righty-leg",
+              [
+                new Node(
+                  "right-calf",
+                  [
+                    new Node(
+                      "right-foot",
+                      [],
+                      generateDefaultArrayOfFace(),
+                      0,
+                      50,
+                      0,
+                      0,
+                      0,
+                      0,
+                      1,
+                      1,
+                      1
+                    ),
+                  ],
+                  generateDefaultArrayOfFace(),
+                  0,
+                  50,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  1,
+                  1
+                ),
+              ],
+              generateDefaultArrayOfFace(),
+              50,
+              50,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1
+            ),
+          ],
+          generateDefaultArrayOfFace(),
+          0,
+          -150,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ),
       ],
+      [],
       0,
       0,
       0,

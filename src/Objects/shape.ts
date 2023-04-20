@@ -101,7 +101,7 @@ class Shape implements ShapeInterface {
   }
 
   public getLocalMatrix(): Matrix {
-    const pivot = this.findCenter();
+    const pivot = new Point(0, 0, 0);
 
     return Transformation.general(
       this.tx,
