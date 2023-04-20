@@ -1,9 +1,9 @@
 import ProgramParam from "Types/program-param";
 import ProgramInfo from "Types/program-info";
 import ProgramBuffer from "Types/program-buffer";
-import isPowerOfTwo from "Utils/power";
 import EnvironmentInfo from "Types/environment-info";
 import MappingMode from "Types/mapping-mode";
+import isPowerOfTwo from "Utils/power";
 
 class Renderer {
   constructor(
@@ -13,15 +13,15 @@ class Renderer {
     public programBuffer: ProgramBuffer
   ) {}
 
-  public texture(source: string): void {
+  public texture(source: string, width: number, height: number): void {
     /* Create a Texture */
     const texture = this.gl.createTexture();
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
 
     const texImageLevel = 0;
     const texImageInternalFormat = this.gl.RGBA;
-    const texImageWidth = 1;
-    const texImageHeight = 1;
+    const texImageWidth = width;
+    const texImageHeight = height;
     const texImageBorder = 0;
     const texImageFormat = this.gl.RGBA;
     const texImageType = this.gl.UNSIGNED_BYTE;
@@ -58,12 +58,12 @@ class Renderer {
         this.gl.texParameteri(
           this.gl.TEXTURE_2D,
           this.gl.TEXTURE_WRAP_S,
-          this.gl.REPEAT
+          this.gl.CLAMP_TO_EDGE
         );
         this.gl.texParameteri(
           this.gl.TEXTURE_2D,
           this.gl.TEXTURE_WRAP_T,
-          this.gl.REPEAT
+          this.gl.CLAMP_TO_EDGE
         );
         this.gl.texParameteri(
           this.gl.TEXTURE_2D,
@@ -212,11 +212,11 @@ class Renderer {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, textureBuffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, rawTexture, this.gl.STATIC_DRAW);
 
-    const textureSize = 2;
-    const textureType = this.gl.FLOAT;
-    const textureNormalized = false;
-    const textureStride = 0;
-    const textureOffset = 0;
+    const textureSize = 2; /* 2 components per iteration */
+    const textureType = this.gl.FLOAT; /* The data is 32 bit float */
+    const textureNormalized = false; /* Don't normalize the data */
+    const textureStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
+    const textureOffset = 0; /* Start at the beginning of the buffer */
     this.gl.vertexAttribPointer(
       texcoordLocation,
       textureSize,

@@ -2,17 +2,18 @@ import FaceInterface from "Interfaces/face-interface";
 import Matrix from "Objects/matrix";
 import Point from "Objects/point";
 import Vector from "Objects/vector";
+import Draw from "Objects/draw";
 
 class Face implements FaceInterface {
-  constructor(public readonly arrayOfPoint: Point[]) {}
+  constructor(public readonly arrayOfDraw: Draw[]) {}
 
   public findCenter(): Point {
     let totalX = 0;
     let totalY = 0;
     let totalZ = 0;
 
-    for (const p of this.arrayOfPoint) {
-      const [pX, pY, pZ] = p.getTriplet();
+    for (const draw of this.arrayOfDraw) {
+      const [pX, pY, pZ] = draw.getPoint().getTriplet();
 
       totalX += pX;
       totalY += pY;
@@ -20,30 +21,21 @@ class Face implements FaceInterface {
     }
 
     return new Point(
-      totalX / this.arrayOfPoint.length,
-      totalY / this.arrayOfPoint.length,
-      totalZ / this.arrayOfPoint.length
+      totalX / this.arrayOfDraw.length,
+      totalY / this.arrayOfDraw.length,
+      totalZ / this.arrayOfDraw.length
     );
   }
 
   public findNormal(): Vector {
-    const q = new Vector(
-      this.arrayOfPoint[0].x,
-      this.arrayOfPoint[0].y,
-      this.arrayOfPoint[0].z
-    );
+    const firstPoint = this.arrayOfDraw[0].getPoint();
+    const q = new Vector(firstPoint.x, firstPoint.y, firstPoint.z);
 
-    const r = new Vector(
-      this.arrayOfPoint[1].x,
-      this.arrayOfPoint[1].y,
-      this.arrayOfPoint[1].z
-    );
+    const secondPoint = this.arrayOfDraw[1].getPoint();
+    const r = new Vector(secondPoint.x, secondPoint.y, secondPoint.z);
 
-    const s = new Vector(
-      this.arrayOfPoint[2].x,
-      this.arrayOfPoint[2].y,
-      this.arrayOfPoint[2].z
-    );
+    const thirdPoint = this.arrayOfDraw[2].getPoint();
+    const s = new Vector(thirdPoint.x, thirdPoint.y, thirdPoint.z);
 
     const qr = r.subtract(q);
     const qs = s.subtract(q);
@@ -52,15 +44,21 @@ class Face implements FaceInterface {
   }
 
   public getRawPosition(): readonly number[] {
-    return this.arrayOfPoint.flatMap((p) => p.getTriplet());
+    return this.arrayOfDraw.flatMap((draw) => draw.getPoint().getTriplet());
+  }
+
+  public getRawTexture(): readonly number[] {
+    return this.arrayOfDraw.flatMap((draw) => draw.getTexture().getPair());
   }
 
   public applyMatrix(matrix: Matrix): Face {
     return new Face(
-      this.arrayOfPoint.map((p) => {
-        const [x, y, z, w] = matrix.multiplyCoordinate(p).getQuadruplet();
+      this.arrayOfDraw.map((draw) => {
+        const [x, y, z, w] = matrix
+          .multiplyCoordinate(draw.getPoint())
+          .getQuadruplet();
 
-        return new Point(x / w, y / w, z / w);
+        return new Draw(new Point(x / w, y / w, z / w), draw.getTexture());
       })
     );
   }

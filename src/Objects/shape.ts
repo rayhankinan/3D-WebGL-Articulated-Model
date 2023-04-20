@@ -80,9 +80,15 @@ class Shape implements ShapeInterface {
     return new Float32Array(positionArray);
   }
 
+  public getRawTexture(): Float32Array {
+    const textureArray = this.arrayOfFace.flatMap((f) => f.getRawTexture());
+
+    return new Float32Array(textureArray);
+  }
+
   public getRawNormal(): Float32Array {
     const normalArray = this.arrayOfFace.flatMap((f) =>
-      Array<readonly [number, number, number]>(f.arrayOfPoint.length)
+      Array<readonly [number, number, number]>(f.arrayOfDraw.length)
         .fill(f.findNormal().getTriplet())
         .flat()
     );
@@ -90,18 +96,8 @@ class Shape implements ShapeInterface {
     return new Float32Array(normalArray);
   }
 
-  public getRawTexture(): Float32Array {
-    const textureArray = this.arrayOfFace.flatMap((f) =>
-      Array<readonly [number, number]>(f.arrayOfPoint.length)
-        .fill([0, 0]) // TODO: UBAH INI
-        .flat()
-    );
-
-    return new Float32Array(textureArray);
-  }
-
   public countVertex(): number {
-    return this.arrayOfFace.flatMap((f) => f.arrayOfPoint).length;
+    return this.arrayOfFace.flatMap((f) => f.arrayOfDraw).length;
   }
 
   public getLocalMatrix(): Matrix {

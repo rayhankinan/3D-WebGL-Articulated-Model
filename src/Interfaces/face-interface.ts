@@ -1,7 +1,7 @@
-import PointInterface from "Interfaces/point-interface";
+import DrawInterface from "Interfaces/draw-interface";
 
 interface FaceInterface {
-  readonly arrayOfPoint: PointInterface[];
+  readonly arrayOfDraw: DrawInterface[];
 }
 
 export default FaceInterface;

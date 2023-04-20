@@ -1,16 +1,16 @@
 import FaceInterface from "Interfaces/face-interface";
 import Face from "Objects/face";
-import PointFactory from "Factories/point-factory";
+import DrawFactory from "Factories/draw-factory";
 
 class FaceFactory {
   public static fromInterface(face: FaceInterface): Face {
-    const { arrayOfPoint } = face;
+    const { arrayOfDraw } = face;
 
-    const newArrayOfPoint = arrayOfPoint.map((point) => {
-      return PointFactory.fromInterface(point);
+    const newArrayOfDraw = arrayOfDraw.map((draw) => {
+      return DrawFactory.fromInterface(draw);
     });
 
-    return new Face(newArrayOfPoint);
+    return new Face(newArrayOfDraw);
   }
 }
 
