@@ -5,20 +5,35 @@ import generateDefaultArrayOfFace from "Main/default-array-of-face";
 function generateDefaultArticulated(): Articulated {
   return new Articulated(
     new Node(
-      "point-between-feet",
+      "root",
       [
         new Node(
-          "waist",
+          "point-between-feet",
           [
             new Node(
-              "torso",
+              "waist",
               [
                 new Node(
-                  "neck",
+                  "torso",
                   [
                     new Node(
-                      "head",
-                      [],
+                      "neck",
+                      [
+                        new Node(
+                          "head",
+                          [],
+                          generateDefaultArrayOfFace(),
+                          0,
+                          -50,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          1,
+                          1
+                        ),
+                      ],
                       generateDefaultArrayOfFace(),
                       0,
                       -50,
@@ -30,27 +45,27 @@ function generateDefaultArticulated(): Articulated {
                       1,
                       1
                     ),
-                  ],
-                  generateDefaultArrayOfFace(),
-                  0,
-                  -50,
-                  0,
-                  0,
-                  0,
-                  0,
-                  1,
-                  1,
-                  1
-                ),
-                new Node(
-                  "left-arm",
-                  [
                     new Node(
-                      "left-forearm",
+                      "left-arm",
                       [
                         new Node(
-                          "left-hand",
-                          [],
+                          "left-forearm",
+                          [
+                            new Node(
+                              "left-hand",
+                              [],
+                              generateDefaultArrayOfFace(),
+                              -50,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              1,
+                              1
+                            ),
+                          ],
                           generateDefaultArrayOfFace(),
                           -50,
                           0,
@@ -74,27 +89,27 @@ function generateDefaultArticulated(): Articulated {
                       1,
                       1
                     ),
-                  ],
-                  generateDefaultArrayOfFace(),
-                  -50,
-                  0,
-                  0,
-                  0,
-                  0,
-                  0,
-                  1,
-                  1,
-                  1
-                ),
-                new Node(
-                  "right-arm",
-                  [
                     new Node(
-                      "right-forearm",
+                      "right-arm",
                       [
                         new Node(
-                          "right-hand",
-                          [],
+                          "right-forearm",
+                          [
+                            new Node(
+                              "right-hand",
+                              [],
+                              generateDefaultArrayOfFace(),
+                              50,
+                              0,
+                              0,
+                              0,
+                              0,
+                              0,
+                              1,
+                              1,
+                              1
+                            ),
+                          ],
                           generateDefaultArrayOfFace(),
                           50,
                           0,
@@ -120,8 +135,8 @@ function generateDefaultArticulated(): Articulated {
                     ),
                   ],
                   generateDefaultArrayOfFace(),
-                  50,
                   0,
+                  -100,
                   0,
                   0,
                   0,
@@ -130,27 +145,27 @@ function generateDefaultArticulated(): Articulated {
                   1,
                   1
                 ),
-              ],
-              generateDefaultArrayOfFace(),
-              0,
-              -100,
-              0,
-              0,
-              0,
-              0,
-              1,
-              1,
-              1
-            ),
-            new Node(
-              "left-leg",
-              [
                 new Node(
-                  "left-calf",
+                  "left-leg",
                   [
                     new Node(
-                      "left-foot",
-                      [],
+                      "left-calf",
+                      [
+                        new Node(
+                          "left-foot",
+                          [],
+                          generateDefaultArrayOfFace(),
+                          0,
+                          50,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          1,
+                          1
+                        ),
+                      ],
                       generateDefaultArrayOfFace(),
                       0,
                       50,
@@ -164,7 +179,7 @@ function generateDefaultArticulated(): Articulated {
                     ),
                   ],
                   generateDefaultArrayOfFace(),
-                  0,
+                  -50,
                   50,
                   0,
                   0,
@@ -174,27 +189,27 @@ function generateDefaultArticulated(): Articulated {
                   1,
                   1
                 ),
-              ],
-              generateDefaultArrayOfFace(),
-              -50,
-              50,
-              0,
-              0,
-              0,
-              0,
-              1,
-              1,
-              1
-            ),
-            new Node(
-              "righty-leg",
-              [
                 new Node(
-                  "right-calf",
+                  "right-leg",
                   [
                     new Node(
-                      "right-foot",
-                      [],
+                      "right-calf",
+                      [
+                        new Node(
+                          "right-foot",
+                          [],
+                          generateDefaultArrayOfFace(),
+                          0,
+                          50,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          1,
+                          1
+                        ),
+                      ],
                       generateDefaultArrayOfFace(),
                       0,
                       50,
@@ -208,7 +223,7 @@ function generateDefaultArticulated(): Articulated {
                     ),
                   ],
                   generateDefaultArrayOfFace(),
-                  0,
+                  50,
                   50,
                   0,
                   0,
@@ -220,8 +235,8 @@ function generateDefaultArticulated(): Articulated {
                 ),
               ],
               generateDefaultArrayOfFace(),
-              50,
-              50,
+              0,
+              -150,
               0,
               0,
               0,
@@ -231,9 +246,9 @@ function generateDefaultArticulated(): Articulated {
               1
             ),
           ],
-          generateDefaultArrayOfFace(),
+          [],
           0,
-          -150,
+          0,
           0,
           0,
           0,

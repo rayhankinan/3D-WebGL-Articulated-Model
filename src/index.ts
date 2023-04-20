@@ -358,7 +358,7 @@ let directionalLight: Light;
 let offsetTranslate = {
   orthographic: {
     x: mainCanvas.width / 2,
-    y: mainCanvas.height / 3,
+    y: mainCanvas.height,
   },
   perspective: {
     x: 0,
@@ -373,7 +373,7 @@ let offsetTranslate = {
 let offsetTranslateSecondaryCanvas = {
   orthographic: {
     x: secondaryCanvas.width / 2,
-    y: secondaryCanvas.height / 3,
+    y: secondaryCanvas.height,
   },
   perspective: {
     x: 0,
@@ -445,7 +445,6 @@ let projectionParamsSecondary: ProjectionParams = {
 };
 let shaderStatus: ShaderStatus = ShaderStatus.OFF;
 let animation: boolean = false;
-let then: DOMHighResTimeStamp = 0;
 let mappingMode: MappingMode = MappingMode.TEXTURE;
 
 /* Global Constant */
@@ -456,35 +455,63 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
   /* Convent to Second */
   now *= 0.001;
 
-  /* Calculate Delta Time */
-  const deltaTime = now - then;
-
-  /* Update Time */
-  then = now;
-
   /* Animate */
   if (animation) {
-    articulated.root.rotateY(
-      degToRad(
-        radToDeg(articulated.root.angleY + animationSpeed * deltaTime) % 360
-      )
-    );
-    articulated.root.rotateZ(
-      degToRad(
-        radToDeg(articulated.root.angleZ + animationSpeed * deltaTime) % 360
-      )
-    );
+    const c = animationSpeed * now;
 
-    /* Change Slider */
-    sliderAngleY.valueAsNumber = Math.round(radToDeg(articulated.root.angleY));
-    labelAngleY.textContent = Math.round(
-      radToDeg(articulated.root.angleY)
-    ).toString();
+    /* Point Between Feet */
+    articulated
+      .findNode("point-between-feet")
+      .moveY(-50 * Math.abs(Math.sin(c)));
 
-    sliderAngleZ.valueAsNumber = Math.round(radToDeg(articulated.root.angleZ));
-    labelAngleZ.textContent = Math.round(
-      radToDeg(articulated.root.angleZ)
-    ).toString();
+    /* Left Leg */
+    articulated.findNode("left-leg").rotateX(Math.sin(c));
+
+    /* Right Leg */
+    articulated.findNode("right-leg").rotateX(-Math.sin(c));
+
+    /* Left Calf */
+    articulated.findNode("left-calf").rotateX(-Math.sin(c + 0.1) * 0.4);
+
+    /* Right Calf */
+    articulated.findNode("right-calf").rotateX(Math.sin(c + 0.1) * 0.4);
+
+    /* Left Foot */
+    articulated.findNode("left-foot").rotateX(-Math.sin(c + 0.1) * 0.4);
+
+    /* Right Foot */
+    articulated.findNode("right-foot").rotateX(Math.sin(c + 0.1) * 0.4);
+
+    /* Left Arm */
+    articulated.findNode("left-arm").rotateZ(Math.sin(c) * 0.4);
+
+    /* Right Arm */
+    articulated.findNode("right-arm").rotateZ(Math.sin(c) * 0.4);
+
+    /* Left Forearm */
+    articulated.findNode("left-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
+
+    /* Right Forearm */
+    articulated.findNode("right-forearm").rotateZ(Math.sin(c + 0.1) * 0.4);
+
+    /* Left Hand */
+    articulated.findNode("left-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
+
+    /* Right Hand */
+    articulated.findNode("right-hand").rotateZ(Math.sin(c - 0.1) * 0.4);
+
+    /* Waist */
+    articulated.findNode("waist").rotateY(Math.sin(c) * 0.4);
+
+    /* Torso */
+    articulated.findNode("torso").rotateY(Math.sin(c) * 0.4);
+
+    /* Neck */
+    articulated.findNode("neck").rotateY(Math.sin(c + 0.25) * 0.4);
+
+    /* Head */
+    articulated.findNode("head").rotateX(Math.sin(c * 2) * 0.2);
+    articulated.findNode("head").rotateY(Math.sin(c + 0.5) * 0.4);
   }
 
   /* Get Current Light */
@@ -610,40 +637,39 @@ const addComponentTree = (
   button.addEventListener("click", (event) => {
     const textContent = (event.target as HTMLButtonElement).textContent;
 
-    selectedNode = articulated.findNode(textContent)
+    selectedNode = articulated.findNode(textContent);
     sliderTranslateShapeX.valueAsNumber = selectedNode.tx;
     labelTranslateShapeX.textContent = selectedNode.tx.toString();
-  
+
     sliderTranslateShapeY.valueAsNumber = selectedNode.ty;
     labelTranslateShapeY.textContent = selectedNode.ty.toString();
-  
+
     sliderTranslateShapeZ.valueAsNumber = selectedNode.tz;
     labelTranslateShapeZ.textContent = selectedNode.tz.toString();
-  
+
     sliderAngleShapeX.valueAsNumber = Math.round(radToDeg(selectedNode.angleX));
     labelAngleShapeX.textContent = Math.round(
       radToDeg(selectedNode.angleX)
     ).toString();
-  
+
     sliderAngleShapeY.valueAsNumber = Math.round(radToDeg(selectedNode.angleY));
     labelAngleShapeY.textContent = Math.round(
       radToDeg(selectedNode.angleY)
     ).toString();
-  
+
     sliderAngleShapeZ.valueAsNumber = Math.round(radToDeg(selectedNode.angleZ));
     labelAngleShapeZ.textContent = Math.round(
       radToDeg(selectedNode.angleZ)
     ).toString();
-  
+
     sliderScaleShapeX.valueAsNumber = selectedNode.sx;
     labelScaleShapeX.textContent = selectedNode.sx.toString();
-  
+
     sliderScaleShapeY.valueAsNumber = selectedNode.sy;
     labelScaleShapeY.textContent = selectedNode.sy.toString();
-  
+
     sliderScaleShapeZ.valueAsNumber = selectedNode.sz;
     labelScaleShapeZ.textContent = selectedNode.sz.toString();
-  
   });
 
   button.style.marginLeft = `${margin_left}%`;
