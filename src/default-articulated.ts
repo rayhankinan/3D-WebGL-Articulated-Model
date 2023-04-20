@@ -286,7 +286,7 @@ function generateDefaultArticulated(): Articulated {
       new Animation(
         "right-leg",
         AnimationType.ROTATE_X,
-        new Lambda("(c) => -Math.sin(c + 0.1) * 0.4")
+        new Lambda("(c) => -Math.sin(c)")
       ),
       new Animation(
         "left-calf",

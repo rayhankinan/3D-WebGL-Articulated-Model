@@ -18,26 +18,6 @@ class Shape implements ShapeInterface {
     public sz: number
   ) {}
 
-  public findCenter(): Point {
-    let totalX = 0;
-    let totalY = 0;
-    let totalZ = 0;
-
-    for (const f of this.arrayOfFace) {
-      const [fX, fY, fZ] = f.findCenter().getTriplet();
-
-      totalX += fX;
-      totalY += fY;
-      totalZ += fZ;
-    }
-
-    return new Point(
-      totalX / this.arrayOfFace.length,
-      totalY / this.arrayOfFace.length,
-      totalZ / this.arrayOfFace.length
-    );
-  }
-
   public moveX(delta: number): void {
     this.tx = delta;
   }
@@ -115,13 +95,6 @@ class Shape implements ShapeInterface {
       this.sz,
       pivot
     );
-  }
-
-  public applyTransformation(): Shape {
-    const matrix = this.getLocalMatrix();
-    const arrayOfFace = this.arrayOfFace.map((f) => f.applyMatrix(matrix));
-
-    return new Shape(arrayOfFace, 0, 0, 0, 0, 0, 0, 1, 1, 1);
   }
 }
 

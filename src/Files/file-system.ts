@@ -10,7 +10,7 @@ class FileSystem {
   }
 
   public static serializeArticulated(articulated: Articulated): string {
-    return JSON.stringify(articulated.applyTransformationTree());
+    return JSON.stringify(articulated);
   }
 }
 
