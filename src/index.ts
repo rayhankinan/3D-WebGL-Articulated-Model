@@ -193,7 +193,7 @@ const secondaryProgramInfo: ProgramInfo = {
     ),
     textureModeLocation: secondaryGL.getUniformLocation(
       secondaryProgram,
-      "u_texture_mode_1"
+      "u_texture_mode"
     ),
   },
 };
