@@ -93,6 +93,8 @@
           highp vec4 texelColor = texture2D(u_texture, v_texcoord);
           if (u_shading) {
             gl_FragColor = texelColor;
+
+            // Count the directional light
             vec3 normal = normalize(v_normal);
             float directional_light = max(dot(normal, u_reverseLightDirection), 0.0);
 
@@ -113,7 +115,20 @@
           vec3 ambient = 0.3 * albedo;
           vec3 norm = normalize(texture2D(u_texture, v_texcoord).rgb * 2.0 - 1.0);
           float diffuse = max(dot(light_dir, norm), 0.0);
-          gl_FragColor = vec4(diffuse * albedo + ambient, 1.0);
+          highp vec4 texelColor  = vec4(diffuse * albedo + ambient, 1.0);
+
+          if (u_shading) {
+            gl_FragColor = texelColor;
+
+            // Count the directional light
+            vec3 normal = normalize(v_normal);
+            float directional_light = max(dot(normal, u_reverseLightDirection), 0.0);
+
+            // Lets multiply just the color portion (not the alpha) by the light
+            gl_FragColor.rgb *= (u_ambientLightColor + directional_light);
+          } else {
+            gl_FragColor = texelColor;
+          }
         }
 
       }
