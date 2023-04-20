@@ -1,6 +1,5 @@
 type ProgramBuffer = {
   positionBuffer: WebGLBuffer;
-  colorBuffer: WebGLBuffer;
   normalBuffer: WebGLBuffer;
   textureBuffer: WebGLBuffer;
 };

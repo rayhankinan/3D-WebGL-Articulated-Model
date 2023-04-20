@@ -98,7 +98,6 @@ const mainProgramInfo: ProgramInfo = {
 /* Setup Main Program Buffer */
 const mainProgramBuffer: ProgramBuffer = {
   positionBuffer: mainGL.createBuffer(),
-  colorBuffer: mainGL.createBuffer(),
   normalBuffer: mainGL.createBuffer(),
   textureBuffer: mainGL.createBuffer(),
 };
@@ -201,7 +200,6 @@ const secondaryProgramInfo: ProgramInfo = {
 /* Setup Secondary Program Buffer */
 const secondaryProgramBuffer: ProgramBuffer = {
   positionBuffer: secondaryGL.createBuffer(),
-  colorBuffer: secondaryGL.createBuffer(),
   normalBuffer: secondaryGL.createBuffer(),
   textureBuffer: secondaryGL.createBuffer(),
 };

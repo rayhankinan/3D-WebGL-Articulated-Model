@@ -156,8 +156,7 @@ class Renderer {
     } = uniformLocations;
 
     /* Unpack Program Buffer */
-    const { positionBuffer, colorBuffer, normalBuffer, textureBuffer } =
-      this.programBuffer;
+    const { positionBuffer, normalBuffer, textureBuffer } = this.programBuffer;
 
     /* Unpack Program Parameter */
     const { attributes, uniforms } = programParam;
