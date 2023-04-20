@@ -115,7 +115,7 @@
           vec3 ambient = 0.3 * albedo;
           vec3 norm = normalize(texture2D(u_texture, v_texcoord).rgb * 2.0 - 1.0);
           float diffuse = max(dot(light_dir, norm), 0.0);
-          highp vec4 texelColor  = vec4(diffuse * albedo + ambient, 1.0);
+          highp vec4 texelColor = vec4(diffuse * albedo + ambient, 1.0);
 
           if (u_shading) {
             gl_FragColor = texelColor;
