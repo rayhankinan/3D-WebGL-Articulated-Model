@@ -156,7 +156,6 @@ class Node extends Shape implements NodeInterface {
     const programParam: ProgramParam = {
       attributes: {
         rawPosition: this.getRawPosition(),
-        rawColor: this.getRawColor(),
         rawNormal: this.getRawNormal(),
         rawTexture: this.getRawTexture(),
       },

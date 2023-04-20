@@ -20,12 +20,8 @@ class Renderer {
 
     /* Unpack Program Info */
     const { attribLocations, uniformLocations } = this.programInfo;
-    const {
-      positionLocation,
-      colorLocation,
-      normalLocation,
-      texcoordLocation,
-    } = attribLocations;
+    const { positionLocation, normalLocation, texcoordLocation } =
+      attribLocations;
     const {
       worldViewProjectionLocation,
       worldInverseTransposeLocation,
@@ -34,8 +30,7 @@ class Renderer {
       shadingLocation,
       textureLocation,
       textureEnvLocation,
-      textureModeLocation1,
-      textureModeLocation2,
+      textureModeLocation,
     } = uniformLocations;
 
     /* Unpack Program Buffer */
@@ -44,7 +39,7 @@ class Renderer {
 
     /* Unpack Program Parameter */
     const { attributes, uniforms } = programParam;
-    const { rawPosition, rawColor, rawNormal, rawTexture } = attributes;
+    const { rawPosition, rawNormal, rawTexture } = attributes;
     const {
       rawMatrix,
       rawInverseTransposeMatrix,
@@ -71,25 +66,6 @@ class Renderer {
       positionStride,
       positionOffset
     );
-
-    // /* Setup Color Attribute */
-    // this.gl.enableVertexAttribArray(colorLocation);
-    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, colorBuffer);
-    // this.gl.bufferData(this.gl.ARRAY_BUFFER, rawColor, this.gl.STATIC_DRAW);
-
-    // const colorSize = 3; /* 3 components per iteration */
-    // const colorType = this.gl.FLOAT; /* The data is 32 bit float */
-    // const colorNormalized = false; /* Normalize the data */
-    // const colorStride = 0; /* 0: Move forward size * sizeof(type) each iteration to get the next position */
-    // const colorOffset = 0; /* Start at the beginning of the buffer */
-    // this.gl.vertexAttribPointer(
-    //   colorLocation,
-    //   colorSize,
-    //   colorType,
-    //   colorNormalized,
-    //   colorStride,
-    //   colorOffset
-    // );
 
     /* Setup Normal Attribute */
     this.gl.enableVertexAttribArray(normalLocation);
@@ -154,24 +130,21 @@ class Renderer {
       this.gl.uniform1i(textureEnvLocation, 1);
 
       /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation1, 0);
-      this.gl.uniform1i(textureModeLocation2, 0);
+      this.gl.uniform1i(textureModeLocation, 0);
     } else if (mappingMode == "environment") {
       /* Set Texture Uniform */
       this.gl.uniform1i(textureLocation, 1);
       this.gl.uniform1i(textureEnvLocation, 0);
 
       /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation1, 1);
-      this.gl.uniform1i(textureModeLocation2, 1);
+      this.gl.uniform1i(textureModeLocation, 1);
     } else if (mappingMode == "bump") {
       /* Set Texture Uniform */
       this.gl.uniform1i(textureLocation, 0);
       this.gl.uniform1i(textureEnvLocation, 1);
 
       /* Set Texture Mode Uniform */
-      this.gl.uniform1i(textureModeLocation1, 0);
-      this.gl.uniform1i(textureModeLocation2, 0);
+      this.gl.uniform1i(textureModeLocation, 0);
     }
 
     /* Draw Shape */

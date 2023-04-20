@@ -13,34 +13,23 @@
 
       uniform mat4 u_worldViewProjection;
       uniform mat4 u_worldInverseTranspose;
-      uniform int u_texture_mode_1;
 
       varying vec3 v_position;
       varying vec3 v_normal;
       varying vec2 v_texcoord;
-      varying vec3 v_lighting;
 
       void main() {
-        if (u_texture_mode_1 == 0) {
-          gl_Position = u_worldViewProjection * a_position;
+        // Multiply the position by the matrix
+        gl_Position = u_worldViewProjection * a_position;
 
-          // Pass the texcoord to the fragment shader
-          v_texcoord = a_texcoord;
+        // Pass the texcoord to the fragment shader
+        v_texcoord = a_texcoord;
 
-          // Orient the normals and pass to the fragment shader
-          v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
+        // Pass the position to the fragment shader
+        v_position = (u_worldViewProjection * a_position).xyz;
 
-        } else if (u_texture_mode_1 == 1) {
-          // Multiply the position by the matrix
-          gl_Position = u_worldViewProjection * a_position;
-
-          v_position = (u_worldViewProjection * a_position).xyz;
-
-          // Orient the normals and pass to the fragment shader
-          v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
-        }
-
-
+        // Orient the normals and pass to the fragment shader
+        v_normal = (u_worldInverseTranspose * vec4(a_normal, 0)).xyz;
       }
     </script>
     <script type="x-shader/x-fragment" id="fragment-shader">
@@ -55,14 +44,14 @@
       uniform vec3 u_reverseLightDirection;
 
       uniform bool u_shading;
-      uniform int u_texture_mode_2;
+      uniform bool u_texture_mode;
 
       // The texture
       uniform sampler2D u_texture;
       uniform samplerCube u_texture_env;
 
       void main() {
-        if (u_texture_mode_2 == 0) {
+        if (!u_texture_mode) {
           highp vec4 texelColor = texture2D(u_texture, v_texcoord);
           if (u_shading) {
             gl_FragColor = texelColor;
@@ -74,7 +63,7 @@
           } else {
             gl_FragColor = texelColor;
           }
-        } else if (u_texture_mode_2 == 1) {
+        } else {
           vec3 normal = normalize(v_normal);
           vec3 direction = reflect(normalize(v_position), normal);
 

@@ -11,8 +11,6 @@ function createProgram(
 
   const success = gl.getProgramParameter(program, gl.LINK_STATUS) as boolean;
   if (!success) {
-    gl.deleteProgram(program);
-
     throw new Error(
       `Could not initialize shaders: ${gl.getProgramInfoLog(program)}`
     );

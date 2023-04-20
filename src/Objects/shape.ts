@@ -18,26 +18,25 @@ class Shape implements ShapeInterface {
     public sz: number
   ) {}
 
-  /* TODO: TIDAK DIBUTUHKAN */
-  // public findCenter(): Point {
-  //   let totalX = 0;
-  //   let totalY = 0;
-  //   let totalZ = 0;
+  public findCenter(): Point {
+    let totalX = 0;
+    let totalY = 0;
+    let totalZ = 0;
 
-  //   for (const f of this.arrayOfFace) {
-  //     const [fX, fY, fZ] = f.findCenter().getTriplet();
+    for (const f of this.arrayOfFace) {
+      const [fX, fY, fZ] = f.findCenter().getTriplet();
 
-  //     totalX += fX;
-  //     totalY += fY;
-  //     totalZ += fZ;
-  //   }
+      totalX += fX;
+      totalY += fY;
+      totalZ += fZ;
+    }
 
-  //   return new Point(
-  //     totalX / this.arrayOfFace.length,
-  //     totalY / this.arrayOfFace.length,
-  //     totalZ / this.arrayOfFace.length
-  //   );
-  // }
+    return new Point(
+      totalX / this.arrayOfFace.length,
+      totalY / this.arrayOfFace.length,
+      totalZ / this.arrayOfFace.length
+    );
+  }
 
   public moveX(delta: number): void {
     this.tx = delta;
@@ -81,16 +80,6 @@ class Shape implements ShapeInterface {
     return new Float32Array(positionArray);
   }
 
-  public getRawColor(): Float32Array {
-    const colorArray = this.arrayOfFace.flatMap((f) =>
-      Array<readonly [number, number, number]>(f.arrayOfPoint.length)
-        .fill(f.getRawColor())
-        .flat()
-    );
-
-    return new Float32Array(colorArray);
-  }
-
   public getRawNormal(): Float32Array {
     const normalArray = this.arrayOfFace.flatMap((f) =>
       Array<readonly [number, number, number]>(f.arrayOfPoint.length)
@@ -116,7 +105,7 @@ class Shape implements ShapeInterface {
   }
 
   public getLocalMatrix(): Matrix {
-    const pivot = new Point(0, 0, 0);
+    const pivot = this.findCenter();
 
     return Transformation.general(
       this.tx,

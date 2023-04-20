@@ -3,7 +3,6 @@ import ShaderStatus from "Types/shader-status";
 type ProgramParam = {
   attributes: {
     rawPosition: Float32Array;
-    rawColor: Float32Array;
     rawNormal: Float32Array;
     rawTexture: Float32Array;
   };

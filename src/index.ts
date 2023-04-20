@@ -65,7 +65,6 @@ const mainProgram = createProgram(mainGL, mainVertexShader, mainFragmentShader);
 const mainProgramInfo: ProgramInfo = {
   attribLocations: {
     positionLocation: mainGL.getAttribLocation(mainProgram, "a_position"),
-    colorLocation: mainGL.getAttribLocation(mainProgram, "a_color"),
     normalLocation: mainGL.getAttribLocation(mainProgram, "a_normal"),
     texcoordLocation: mainGL.getAttribLocation(mainProgram, "a_texcoord"),
   },
@@ -89,13 +88,9 @@ const mainProgramInfo: ProgramInfo = {
     shadingLocation: mainGL.getUniformLocation(mainProgram, "u_shading"),
     textureLocation: mainGL.getUniformLocation(mainProgram, "u_texture"),
     textureEnvLocation: mainGL.getUniformLocation(mainProgram, "u_texture_env"),
-    textureModeLocation1: mainGL.getUniformLocation(
+    textureModeLocation: mainGL.getUniformLocation(
       mainProgram,
-      "u_texture_mode_1"
-    ),
-    textureModeLocation2: mainGL.getUniformLocation(
-      mainProgram,
-      "u_texture_mode_2"
+      "u_texture_mode"
     ),
   },
 };
@@ -161,7 +156,6 @@ const secondaryProgramInfo: ProgramInfo = {
       secondaryProgram,
       "a_position"
     ),
-    colorLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_color"),
     normalLocation: secondaryGL.getAttribLocation(secondaryProgram, "a_normal"),
     texcoordLocation: secondaryGL.getAttribLocation(
       secondaryProgram,
@@ -197,13 +191,9 @@ const secondaryProgramInfo: ProgramInfo = {
       secondaryProgram,
       "u_texture_env"
     ),
-    textureModeLocation1: secondaryGL.getUniformLocation(
+    textureModeLocation: secondaryGL.getUniformLocation(
       secondaryProgram,
       "u_texture_mode_1"
-    ),
-    textureModeLocation2: secondaryGL.getUniformLocation(
-      secondaryProgram,
-      "u_texture_mode_2"
     ),
   },
 };
