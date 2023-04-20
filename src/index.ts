@@ -21,6 +21,7 @@ import generateDefaultCamera from "Main/default-camera";
 import generateDefaultAmbientColor from "Main/default-ambient-color";
 import generateDefaultDirectionalLight from "Main/default-directional-light";
 import generateDefaultArticulated from "Main/default-articulated";
+import Transformation from "Operations/transformation";
 
 /* Get Vertex dan Fragment Source */
 const vertexShaderElement = document.getElementById("vertex-shader");
@@ -518,7 +519,7 @@ const renderMainCanvas = (now: DOMHighResTimeStamp) => {
       currentLight,
       shaderStatus,
       mappingMode,
-      selectedNode.getLocalMatrix()
+      Transformation.identity()
     );
   }
 
@@ -609,7 +610,40 @@ const addComponentTree = (
   button.addEventListener("click", (event) => {
     const textContent = (event.target as HTMLButtonElement).textContent;
 
-    selectedNode = deepCopyNode(articulated.findNode(textContent));
+    selectedNode = articulated.findNode(textContent)
+    sliderTranslateShapeX.valueAsNumber = selectedNode.tx;
+    labelTranslateShapeX.textContent = selectedNode.tx.toString();
+  
+    sliderTranslateShapeY.valueAsNumber = selectedNode.ty;
+    labelTranslateShapeY.textContent = selectedNode.ty.toString();
+  
+    sliderTranslateShapeZ.valueAsNumber = selectedNode.tz;
+    labelTranslateShapeZ.textContent = selectedNode.tz.toString();
+  
+    sliderAngleShapeX.valueAsNumber = Math.round(radToDeg(selectedNode.angleX));
+    labelAngleShapeX.textContent = Math.round(
+      radToDeg(selectedNode.angleX)
+    ).toString();
+  
+    sliderAngleShapeY.valueAsNumber = Math.round(radToDeg(selectedNode.angleY));
+    labelAngleShapeY.textContent = Math.round(
+      radToDeg(selectedNode.angleY)
+    ).toString();
+  
+    sliderAngleShapeZ.valueAsNumber = Math.round(radToDeg(selectedNode.angleZ));
+    labelAngleShapeZ.textContent = Math.round(
+      radToDeg(selectedNode.angleZ)
+    ).toString();
+  
+    sliderScaleShapeX.valueAsNumber = selectedNode.sx;
+    labelScaleShapeX.textContent = selectedNode.sx.toString();
+  
+    sliderScaleShapeY.valueAsNumber = selectedNode.sy;
+    labelScaleShapeY.textContent = selectedNode.sy.toString();
+  
+    sliderScaleShapeZ.valueAsNumber = selectedNode.sz;
+    labelScaleShapeZ.textContent = selectedNode.sz.toString();
+  
   });
 
   button.style.marginLeft = `${margin_left}%`;
