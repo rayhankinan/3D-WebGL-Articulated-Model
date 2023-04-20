@@ -1,14 +1,10 @@
 import FaceInterface from "Interfaces/face-interface";
 import Matrix from "Objects/matrix";
-import Color from "Objects/color";
 import Point from "Objects/point";
 import Vector from "Objects/vector";
 
 class Face implements FaceInterface {
-  constructor(
-    public readonly arrayOfPoint: Point[],
-    public readonly color: Color
-  ) {}
+  constructor(public readonly arrayOfPoint: Point[]) {}
 
   public findCenter(): Point {
     let totalX = 0;
@@ -59,18 +55,13 @@ class Face implements FaceInterface {
     return this.arrayOfPoint.flatMap((p) => p.getTriplet());
   }
 
-  public getRawColor(): readonly [number, number, number] {
-    return this.color.getTriplet();
-  }
-
   public applyMatrix(matrix: Matrix): Face {
     return new Face(
       this.arrayOfPoint.map((p) => {
         const [x, y, z, w] = matrix.multiplyCoordinate(p).getQuadruplet();
 
         return new Point(x / w, y / w, z / w);
-      }),
-      this.color
+      })
     );
   }
 }

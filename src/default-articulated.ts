@@ -1,12 +1,11 @@
 import Articulated from "Objects/articulated";
-import FileSystem from "Files/file-system";
+import Node from "Objects/node";
+import Face from "Objects/face";
 
 function generateDefaultArticulated(): Articulated {
-  const currentRawArticulated = JSON.stringify(
-    require("../shapes/articulated.json")
+  return new Articulated(
+    new Node("root", [], [new Face([])], 0, 0, 0, 0, 0, 0, 1, 1, 1)
   );
-
-  return FileSystem.loadArticulated(currentRawArticulated);
 }
 
 export default generateDefaultArticulated;

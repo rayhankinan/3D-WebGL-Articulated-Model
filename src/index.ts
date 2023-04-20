@@ -672,9 +672,6 @@ const initializeDefaultValue = (
   ambientColor = newAmbientColor;
   directionalLight = newDirectionalLight;
 
-  loadTexture(mainGL, "images/f-texture.png");
-  loadTexture(secondaryGL, "images/f-texture.png");
-
   sliderTranslateX.valueAsNumber = articulated.root.tx;
   labelTranslateX.textContent = articulated.root.tx.toString();
 
@@ -727,6 +724,9 @@ const initializeDefaultValue = (
   animationModeButton.textContent = "ON";
   animationModeButton.classList.add("active");
   animation = true;
+
+  loadTexture(mainGL, "images/f-texture.png");
+  loadTexture(secondaryGL, "images/f-texture.png");
 };
 
 /* Component Tree */
@@ -917,8 +917,8 @@ listOfMapping.addEventListener("change", () => {
     loadEnvironment(mainGL);
     loadEnvironment(secondaryGL);
   } else if (mappingMode == "bump") {
-    loadTexture(mainGL, "images/Bumped.png");
-    loadTexture(secondaryGL, "images/Bumped.png");
+    loadTexture(mainGL, "images/bumped.png");
+    loadTexture(secondaryGL, "images/bumped.png");
   }
 });
 
